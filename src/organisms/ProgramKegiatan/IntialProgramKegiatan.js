@@ -36,7 +36,10 @@ export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 									color="transparent"
 									iconOnly
 									onClick={() => deleteItem(cell.row.original.id)}>
-									<Icons icon="TrashIcon" className="w-5 h-5 pointer-events-none text-rose-900" />
+									<Icons
+										icon="TrashIcon"
+										className="w-5 h-5 pointer-events-none text-rose-900"
+									/>
 								</Button>
 							</div>
 						</div>
@@ -259,7 +262,7 @@ export const formDefault = (data = {}) => {
 		id_kegiatan: null,
 		id_program: null,
 		indikator: "",
-		type: "",
+		type: "program",
 		kinerja: "",
 		kode_bidang_urusan: "",
 		kode_kegiatan: "",
@@ -280,7 +283,11 @@ export const formDefault = (data = {}) => {
 			id_kegiatan: data.id_kegiatan || null,
 			id_program: data.id_program || null,
 			indikator: data.indikator || "",
-			type: data.kode_sub_kegiatan ? "subKegiatan" : data.kode_kegiatan ? "kegiatan" : "program",
+			type: data.kode_sub_kegiatan
+				? "subKegiatan"
+				: data.kode_kegiatan
+				? "kegiatan"
+				: "program",
 			kinerja: data.kinerja || "",
 			kode_bidang_urusan: data.kode_bidang_urusan || "",
 			kode_kegiatan: data.kode_kegiatan || "",

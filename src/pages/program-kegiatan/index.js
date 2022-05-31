@@ -89,36 +89,32 @@ function App() {
 		setProgramKegiatanEdit({});
 	};
 	return (
-		<AppLayout>
-			{/* <Head>
-				<title>Laravel - Dashboard</title>
-			</Head> */}
-			<ConfirmDelete
-				open={!!deleteId}
-				deleteAction={deleteData}
-				itemId={deleteId}
-				close={() => setDeleteId(0)}
-			/>
+		<>
+			<AppLayout>
+				<Head>
+					<title>Program Kagiatan</title>
+				</Head>
 
-			{/* buuton for table */}
-			<div className="flex p-4 items-center gap-2 max-w-full justify-end">
-				<Button rounded size="sm" onClick={() => setFormModalOpen(true)}>
-					<PlusCircleIcon className="w-5 h-5 -ml-2" />
-					<span>Tambah</span>
-				</Button>
-				<Button onClick={() => alert("to do list...")} rounded size="sm">
-					<span>Download</span>
-					<DownloadIcon className="w-5 h-5 -mr-1" />
-				</Button>
-				<Button onClick={() => alert("to do list...")} rounded size="sm">
-					<span>Cetak</span>
-					<PrinterIcon className="w-5 h-5 -mr-2" />
-				</Button>
-			</div>
-			<div className="w-full bg-slate-200 text-slate-900 overflow-auto">
-				{/* <div className="w-full bg-red-600"> */}
-				<Table columns={columns} data={data} />
-			</div>
+				{/* buuton for table */}
+				<div className="flex p-4 items-center gap-2 max-w-full justify-end">
+					<Button rounded size="sm" onClick={() => setFormModalOpen(true)}>
+						<PlusCircleIcon className="w-5 h-5 -ml-2" />
+						<span>Tambah</span>
+					</Button>
+					<Button onClick={() => alert("to do list...")} rounded size="sm">
+						<span>Download</span>
+						<DownloadIcon className="w-5 h-5 -mr-1" />
+					</Button>
+					<Button onClick={() => alert("to do list...")} rounded size="sm">
+						<span>Cetak</span>
+						<PrinterIcon className="w-5 h-5 -mr-2" />
+					</Button>
+				</div>
+				<div className="w-full bg-slate-200 text-slate-900 overflow-auto">
+					{/* <div className="w-full bg-red-600"> */}
+					<Table columns={columns} data={data} />
+				</div>
+			</AppLayout>
 			<DialogModal size="xl" isOpen={formModalOpen} closeModal={closeModal}>
 				<FormProgramKegiatan
 					close={closeModal}
@@ -126,7 +122,13 @@ function App() {
 					editData={programKegiatanEdit}
 				/>
 			</DialogModal>
-		</AppLayout>
+			<ConfirmDelete
+				open={!!deleteId}
+				deleteAction={deleteData}
+				itemId={deleteId}
+				close={() => setDeleteId(0)}
+			/>
+		</>
 	);
 }
 

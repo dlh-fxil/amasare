@@ -112,7 +112,9 @@ function ProgramKegiatan() {
 								<button
 									className="w-full flex space-x-2 justify-center items-center hover:bg-slate-500 text-xl py-2 rounded-lg text-slate-50"
 									onClick={() => setOpenModal(!openModal)}>
-									<span className="text-sm font-semibold">Tambah Kegiatan</span>
+									<span className="text-sm font-semibold">
+										Tambah Aktivitas
+									</span>
 								</button>
 							</div>
 						</div>
@@ -126,21 +128,23 @@ function ProgramKegiatan() {
 						/>
 					</div>
 				</div>
-				<DialogModal
-					size="xl"
-					isOpen={openModal}
-					setIsOpen={() => setOpenModal(true)}
-					closeModal={() => setOpenModal(false)}>
-					<div className="min-w-max">
-						<FormAktivitas
-							returnSuccess={returnSuccess}
-							close={() => {
-								setOpenModal(false);
-							}}
-							editData={editAktivitas}
-						/>
-					</div>
-				</DialogModal>
+				{
+					<DialogModal
+						size="xl"
+						isOpen={openModal}
+						setIsOpen={() => setOpenModal(true)}
+						closeModal={() => setOpenModal(false)}>
+						<div className="min-w-max">
+							<FormAktivitas
+								returnSuccess={returnSuccess}
+								close={() => {
+									setOpenModal(false);
+								}}
+								editData={editAktivitas}
+							/>
+						</div>
+					</DialogModal>
+				}
 				<DialogModal
 					size="xl"
 					isOpen={openModalFollow}
@@ -153,13 +157,6 @@ function ProgramKegiatan() {
 							dataFollow={dataFollow}
 						/>
 					</div>
-				</DialogModal>
-				<DialogModal
-					size="xl"
-					isOpen={openModalFilter}
-					setIsOpen={() => setOpenModalFilter(true)}
-					closeModal={() => setOpenModalFilter(false)}>
-					<FormFilterAktivitas setFilters={setFilters} />
 				</DialogModal>
 			</div>
 		</AppLayout>

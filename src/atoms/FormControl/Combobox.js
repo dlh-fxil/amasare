@@ -52,7 +52,7 @@ const ComboBox = forwardRef(
 						value={selected}
 						onChange={e => {
 							setSelected(e);
-							onChange(e.value);
+							onChange(e?.value);
 						}}>
 						{({ open }) => (
 							<div className="relative">

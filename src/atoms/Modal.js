@@ -20,6 +20,7 @@ const DialogModal = ({
 			<Dialog
 				as="div"
 				className="relative z-10"
+				open={isOpen}
 				onClose={() => {
 					closeModal();
 				}}>
@@ -34,7 +35,7 @@ const DialogModal = ({
 					<div className="fixed inset-0 bg-black bg-opacity-75" />
 				</Transition.Child>
 
-				<div className="fixed inset-0">
+				<div className="fixed inset-0 my-6 overflow-auto">
 					{/* <div className="fixed inset-0 z-40 h-fit transform top-1/2 left-1/2  -translate-x-1/2 -translate-y-1/2 "> */}
 					<div className="flex items-center min-h-full justify-center text-center">
 						<Transition.Child

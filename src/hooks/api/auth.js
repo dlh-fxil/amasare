@@ -11,7 +11,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 			.get("/api/user")
 			.then(res => res.data.data)
 			.catch(error => {
-				if (error.response.status !== 409) throw error;
+				if (error?.response?.status !== 409) throw error;
 
 				router.push("/verify-email");
 			}),
@@ -28,9 +28,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 			.post("/register", props)
 			.then(() => mutate())
 			.catch(error => {
-				if (error.response.status !== 422) throw error;
+				if (error?.response?.status !== 422) throw error;
 
-				setErrors(Object.values(error.response.data.errors).flat());
+				setErrors(Object.values(error?.response?.data.errors).flat());
 			});
 	};
 
@@ -44,9 +44,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 			.post("/login", props)
 			.then(() => mutate())
 			.catch(error => {
-				if (error.response.status !== 422) throw error;
+				if (error?.response?.status !== 422) throw error;
 
-				setErrors(Object.values(error.response.data.errors).flat());
+				setErrors(Object.values(error?.response?.data?.errors).flat());
 			});
 	};
 
@@ -58,11 +58,11 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
 		axios
 			.post("/forgot-password", { email })
-			.then(response => setStatus(response.data.status))
+			.then(response => setStatus(response?.data?.status))
 			.catch(error => {
-				if (error.response.status !== 422) throw error;
+				if (error?.response?.status !== 422) throw error;
 
-				setErrors(Object.values(error.response.data.errors).flat());
+				setErrors(Object.values(error?.response?.data?.errors).flat());
 			});
 	};
 
@@ -75,19 +75,19 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 		axios
 			.post("/reset-password", { token: router.query.token, ...props })
 			.then(response =>
-				router.push("/login?reset=" + btoa(response.data.status)),
+				router.push("/login?reset=" + btoa(response?.data?.status)),
 			)
 			.catch(error => {
-				if (error.response.status !== 422) throw error;
+				if (error?.response?.status !== 422) throw error;
 
-				setErrors(Object.values(error.response.data.errors).flat());
+				setErrors(Object.values(error?.response?.data?.errors).flat());
 			});
 	};
 
 	const resendEmailVerification = ({ setStatus }) => {
 		axios
 			.post("/email/verification-notification")
-			.then(response => setStatus(response.data.status));
+			.then(response => setStatus(response?.data?.status));
 	};
 
 	const logout = async () => {

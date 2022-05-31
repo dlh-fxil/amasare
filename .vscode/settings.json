@@ -1,6 +1,6 @@
 {
     "workbench.colorTheme": "Mayukai Mirage Gruvbox Darktooth",
-    "editor.fontFamily": "Fira Code",
+    // "editor.fontFamily": "Fira Code",
     "editor.fontLigatures": true,
     "editor.fontSize": 14,
     "workbench.iconTheme": "vscode-icons",

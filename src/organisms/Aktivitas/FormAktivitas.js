@@ -17,11 +17,17 @@ function FormAktivitas({
 	returnSuccess = () => {},
 } = {}) {
 	const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
-	const { optionsUraianTugas, getOptionsUraianTugas } = makeOptionsUraianTugas();
+	const {
+		optionsUraianTugas,
+		getOptionsUraianTugas,
+	} = makeOptionsUraianTugas();
 
 	const [hasUraianTugas, sethasUraianTugas] = useState(true);
 	const [jabatanId, setJabatanId] = useState(pegawai?.jabatan_id);
-	const { getOptionsSubKegiatan, optionsSubKegiatan } = makeOptionsPorgramKegiatan();
+	const {
+		getOptionsSubKegiatan,
+		optionsSubKegiatan,
+	} = makeOptionsPorgramKegiatan();
 	const schema = yup
 		.object({
 			judul: yup.string().required("Judul aktivitas harus diisi"),
@@ -102,19 +108,27 @@ function FormAktivitas({
 	};
 	return (
 		<>
-			<div className="form-header ">Formulir Tambah Kegiatan</div>
+			<div className="form-header ">Formulir Tambah Aktivitas</div>
 			<form className="form" onSubmit={handleSubmit(submitForm)}>
 				<div className="flex px-4 flex-col gap-2">
 					<Controller
 						render={({ field }) => (
-							<Input {...field} placeholder="Judul Aktivitas" error={errors?.judul?.message} />
+							<Input
+								{...field}
+								placeholder="Judul Aktivitas"
+								error={errors?.judul?.message}
+							/>
 						)}
 						name="judul"
 						control={control}
 					/>
 					<Controller
 						render={({ field }) => (
-							<Textarea {...field} placeholder="Uraian Aktivitas" error={errors?.uraian?.message} />
+							<Textarea
+								{...field}
+								placeholder="Uraian Aktivitas"
+								error={errors?.uraian?.message}
+							/>
 						)}
 						name="uraian"
 						control={control}

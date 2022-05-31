@@ -44,7 +44,9 @@ const AppLayout = ({ header, children, checkIsAccessible }) => {
 				draggable
 				pauseOnHover
 			/>
-			{isTooltipVisible && <ReactTooltip bodyMode />}
+			{isTooltipVisible && (
+				<ReactTooltip bodyMode globalEventOff="click blur" />
+			)}
 			{showSidebar && (
 				<Sidebar
 					onSidebarHide={() => {
