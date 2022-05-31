@@ -1,0 +1,45 @@
+{
+    "workbench.colorTheme": "Mayukai Mirage Gruvbox Darktooth",
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "workbench.iconTheme": "vscode-icons",
+    "explorer.confirmDelete": false,
+    "editor.formatOnSave": true,
+    "eslint.format.enable": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.alwaysShowStatus": true,
+    "eslint.validate": ["javascript"],
+   "editor.detectIndentation": true,
+    "files.associations": {
+        "*.js": "javascriptreact"
+    },
+   
+    "explorer.confirmDragAndDrop": false,
+    "editor.minimap.enabled": false,
+    "breadcrumbs.enabled": false,
+    "editor.renderWhitespace": "none",
+    "editor.renderControlCharacters": false,
+    "window.zoomLevel": -1,
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "workbench.editor.enablePreview": false,
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        // "vue-html": "html"
+    },
+    // "prettier.printWidth": 200,
+    "prettier.requireConfig": true,
+    // "prettier.singleQuote": true,
+    // "prettier.trailingComma": "all",
+    // "prettier.useTabs": true,
+    // "prettier.semi": true,
+    // "prettier.jsxBracketSameLine": true,
+    // "prettier.bracketSpacing": true,
+    // "prettier.jsxSingleQuote": true,
+    // "html.format.indentHandlebars": true,
+    // "html.format.indentInnerHtml": true,
+    "prettier.requirePragma": true,
+    "editor.tabSize": 2,
+}
