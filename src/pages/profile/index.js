@@ -3,16 +3,21 @@ import Head from "next/head";
 import Container from "@components/Container";
 import HeaderProfile from "@organisms/Profile/HeaderProfile";
 import { useAuth } from "@hooks/api/auth";
-import { useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AktivitasUser from "@organisms/Profile/AktivitasUser";
 import UraianTugasUser from "@organisms/Profile/UraianTugasUser";
 const App = () => {
 	const { user } = useAuth({ middleware: "auth" });
+	const [userId, setUserId] = useState(0);
 	const childCompRef = useRef();
 	const reloadAktivitas = params => {
 		childCompRef.current.reload(params);
 	};
-
+	useEffect(() => {
+		if (user?.id) {
+			setUserId(user.id);
+		}
+	}, [user]);
 	return (
 		<AppLayout>
 			<Head>
@@ -28,7 +33,7 @@ const App = () => {
 						</div>
 					)}
 					<div className="flex-grow">
-						<AktivitasUser ref={childCompRef} userId={user?.id} />
+						<AktivitasUser ref={childCompRef} userId={userId} />
 					</div>
 				</div>
 			</Container>

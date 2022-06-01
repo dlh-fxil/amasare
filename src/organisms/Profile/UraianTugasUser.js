@@ -31,12 +31,7 @@ export default function UraianTugasUser({ jabatan = {} } = {}) {
 			getDataUraianTugas();
 		}
 	}, [jabatan]);
-	useEffect(() => {
-		console.log(dataEdit);
-		if (dataEdit.id) {
-			// getDataUraianTugas();
-		}
-	});
+
 	const editData = item => {
 		if (item.id) {
 			setDataEdit(item);

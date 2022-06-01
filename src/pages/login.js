@@ -71,15 +71,15 @@ const Login = () => {
 					</Link>
 				}>
 				<div>
-					<p className="font-bold text-lg sm:text-2xl sm:uppercase w-full rounded-t-lg text-center px-4 pt-4 pb-2 bg-slate-500 bg-opacity-10 tracking-widest">
-						Login
+					<p className="font-bold text-xl sm:text-2xl uppercase w-full rounded-t-lg text-center px-4 pt-4 pb-2 bg-slate-500 bg-opacity-10 tracking-widest">
+						Form Login
 					</p>
 					<div className="p-4">
 						<AuthSessionStatus status={status} />
 						<AuthValidationErrors errors={errorsBackend} />
 					</div>
-					<form className="px-6" onSubmit={handleSubmit(submitForm)}>
-						<div className="flex flex-col gap-6">
+					<form className="" onSubmit={handleSubmit(submitForm)}>
+						<div className="flex px-6 py-2 flex-col gap-6">
 							<Input
 								{...register("email")}
 								name="email"
@@ -121,17 +121,17 @@ const Login = () => {
 									</a>
 								</Link>
 							</div>
-							<div className="flex items-center pb-4 gap-2 justify-end">
-								<Link href="/register">
-									<a className="underline text-sm hover:scale-105  hover:font-semibold cursor-pointer text-blue-900 font-bold hover:text-gray-900">
-										Belum Punya Akun?
-									</a>
-								</Link>
+						</div>
+						<div className="flex items-center bg-slate-500/20 p-4 gap-2 justify-end">
+							<Link href="/register">
+								<a className="underline text-sm hover:scale-105  hover:font-semibold cursor-pointer text-blue-900 font-bold hover:text-gray-900">
+									Belum Punya Akun?
+								</a>
+							</Link>
 
-								<Button type="submit" color="sky">
-									Masuk
-								</Button>
-							</div>
+							<Button type="submit" color="sky">
+								Masuk
+							</Button>
 						</div>
 					</form>
 				</div>

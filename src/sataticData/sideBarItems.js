@@ -34,9 +34,9 @@ const sidebarItems = [
 			icon: "AcademicCapIcon",
 		},
 		{
-			title: "Manajemen User",
+			title: "Data Pegawai",
 			notifications: false,
-			route: "/users",
+			route: "/pegawai",
 			icon: "AcademicCapIcon",
 		},
 		{

@@ -36,6 +36,29 @@ export const updateUser = async (formData, id) => {
 		}
 	}
 };
+export const getUser = async ({ query = null, url = null } = {}) => {
+	try {
+		let newUrl = "/api/users";
+		if (query) {
+			newUrl = `/api/users${query}`;
+		}
+		if (url) {
+			newUrl = url;
+		}
+		const res = await axios.get(newUrl);
+		console.log(res);
+		if (res.data.success) {
+			return res.data;
+		}
+	} catch (error) {
+		if (error?.response?.status == 422) {
+			return console.log(Object.values(error.response.data.errors).flat());
+		} else {
+			console.error("message: ", error.response?.data?.message);
+			return console.error("Error: ", error.message);
+		}
+	}
+};
 export const showUser = async id => {
 	try {
 		const res = await axios.get(`/api/users/${id}`);

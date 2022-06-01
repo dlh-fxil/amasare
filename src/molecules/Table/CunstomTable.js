@@ -9,9 +9,7 @@ import {
 } from "react-table";
 import React, { useMemo, useState, useEffect } from "react";
 import ColumnFilter from "./ColumnFilter";
-const CustomTable = ({ columns, data }) => {
-	const [loading, setLoading] = useState(false);
-
+const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
 	const defaultColumn = useMemo(
 		() => ({
 			Filter: ColumnFilter,
@@ -29,7 +27,14 @@ const CustomTable = ({ columns, data }) => {
 		rows,
 		prepareRow,
 		visibleColumns,
-		state: { pageIndex, pageSize, globalFilter, filters, columnResizing, sortBy },
+		state: {
+			pageIndex,
+			pageSize,
+			globalFilter,
+			filters,
+			columnResizing,
+			sortBy,
+		},
 	} = useTable(
 		{
 			columns,
@@ -77,16 +82,24 @@ const CustomTable = ({ columns, data }) => {
 									<div className="w-full" {...column.getSortByToggleProps()}>
 										{column.render("Header")}
 										<span className="text-right">
-											{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
+											{column.isSorted
+												? column.isSortedDesc
+													? " 🔽"
+													: " 🔼"
+												: ""}
 										</span>
 									</div>
-									{column.canFilter && column.id !== "_id" ? column.render("Filter") : null}
+									{column.canFilter && column.id !== "_id"
+										? column.render("Filter")
+										: null}
 								</div>
 
 								<div
 									{...column.getResizerProps()}
 									className={`resizer top-0 right-0 inline-block z-10 transform absolute w-1 h-full translate-x-1/2  ${
-										column.isResizing ? "isResizing bg-orange-300" : "bg-green-500"
+										column.isResizing
+											? "isResizing bg-orange-300"
+											: "bg-green-500"
 									} `}
 								/>
 							</th>

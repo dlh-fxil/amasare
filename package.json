@@ -55,5 +55,5 @@
 	 "cacheDirectories": [
     "node_modules/",
     ".next/cache/"
-  ],
+  ]
 }
