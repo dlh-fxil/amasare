@@ -61,26 +61,30 @@ function FormAktivitas({
 		resolver: yupResolver(schema),
 		reValidateMode: "onChange",
 	});
-
+	const unitId = useWatch({
+		control,
+		name: "unit_id",
+	});
 	useEffect(async () => {
 		if (optionsUnit.length == 0) {
 			await getOptionsUnit();
 		}
 		if (jabatanId && hasUraianTugas && optionsUraianTugas.length == 0) {
 			await getOptionsUraianTugas(jabatanId);
+			console.log(optionsUraianTugas);
 		}
 	}, [jabatanId, hasUraianTugas]);
 
+	// useEffect(() => {
+	// 	if (data && data?.uraian_tugas_id == null) {
+	// 		sethasUraianTugas(false);
+	// 	}
+	// }, [data]);
 	useEffect(() => {
-		if (data && data?.uraian_tugas_id == null) {
-			sethasUraianTugas(false);
+		if (unitId) {
+			getOptionsSubKegiatan({ unitId });
 		}
-	}, [data]);
-	useEffect(() => {
-		if (!optionsSubKegiatan.length > 0) {
-			getOptionsSubKegiatan();
-		}
-	}, []);
+	}, [unitId]);
 
 	const resetForm = () => {
 		reset({}, { keepDefaultValues: true });
@@ -149,13 +153,27 @@ function FormAktivitas({
 							control={control}
 						/>
 					)}
-
+					<Controller
+						render={({ field: { onChange, value } }) => (
+							<ComboBox
+								placeholder="Pilih Kegiatan (Dalam DPA/DPPA)"
+								options={optionsSubKegiatan}
+								value={value}
+								error={errors?.program_kegiatan_id?.message}
+								onChange={e => onChange(e)}
+							/>
+						)}
+						name="program_kegiatan_id"
+						control={control}
+					/>
 					{jabatanId && (
 						<label className="flex flex-wrap justify-between items-start">
 							Aktivitas sesuai uraian tugas?
 							<Switch
 								checked={hasUraianTugas}
-								onChange={sethasUraianTugas}
+								onChange={() => {
+									sethasUraianTugas(!hasUraianTugas);
+								}}
 								className={`${
 									hasUraianTugas ? "bg-blue-300" : "bg-red-300"
 								} relative inline-flex h-6 w-11 items-center rounded-full`}>
@@ -176,19 +194,6 @@ function FormAktivitas({
 						</label>
 					)}
 
-					<Controller
-						render={({ field: { onChange, value } }) => (
-							<ComboBox
-								placeholder="Pilih Kegiatan (Dalam DPA/DPPA)"
-								options={optionsSubKegiatan}
-								value={value}
-								error={errors?.program_kegiatan_id?.message}
-								onChange={e => onChange(e)}
-							/>
-						)}
-						name="program_kegiatan_id"
-						control={control}
-					/>
 					{hasUraianTugas && optionsUraianTugas.length > 0 && jabatanId && (
 						<Controller
 							render={({ field: { onChange, value } }) => (

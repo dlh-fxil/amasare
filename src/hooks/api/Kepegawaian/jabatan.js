@@ -90,11 +90,11 @@ export const getJabatan = async ({ query = null, url = null }) => {
 		}
 	} catch (error) {
 		console.clear();
-		if (error?.response?.status == 422) {
-			return error.response.data;
-		} else {
-			return { errors: error, message: error };
-		}
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		return { errors: error, message: message };
 	}
 };
 

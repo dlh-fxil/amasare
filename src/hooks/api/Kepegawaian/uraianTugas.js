@@ -12,6 +12,7 @@ export const makeOptionsUraianTugas = () => {
 				query: `?perPage=999&filter[jabatan_id]=${jabatanId}`,
 			});
 			if (success) {
+				console.log(data);
 				let temp = [];
 				data.map(i => {
 					temp.push({
@@ -23,12 +24,11 @@ export const makeOptionsUraianTugas = () => {
 				return setOptionsUraianTugas(temp);
 			}
 		} catch (error) {
-			if (error?.response?.status == 422) {
-				return console.log(Object.values(error.response.data.errors).flat());
-			} else {
-				console.error("message: ", error.response?.data?.message);
-				return console.error("Error: ", error.message);
-			}
+			const message =
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
+			return { errors: error, message: message };
 		}
 		// }
 	};

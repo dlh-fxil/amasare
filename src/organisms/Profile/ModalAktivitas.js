@@ -7,6 +7,7 @@ const ModalAktivitas = ({
 	close = () => {},
 	editAktivitas = {},
 	returnSuccess = () => {},
+	pegawai = {},
 } = {}) => {
 	return (
 		<DialogModal size="xl" isOpen={open} closeModal={close}>
@@ -15,6 +16,7 @@ const ModalAktivitas = ({
 					returnSuccess={returnSuccess}
 					close={close}
 					editData={editAktivitas}
+					pegawai={pegawai}
 				/>
 			</div>
 		</DialogModal>

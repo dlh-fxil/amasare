@@ -40,7 +40,7 @@ function App() {
 
 	const makeQuery = useMemo(() => {
 		const { globalFilter, filters, sortBy } = tableOption;
-		const includes = "";
+		const includes = "unit,program,kegiatan";
 		const param = makeQueryParams({
 			globalFilter,
 			filters,

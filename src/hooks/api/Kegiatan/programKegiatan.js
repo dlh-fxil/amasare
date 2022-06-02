@@ -25,7 +25,9 @@ export const addProgramKegiatan = async formData => {
 			return error.response.data;
 		} else {
 			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
 			toastLoading({
 				message: "Data gagal ditambahkan " + message,
 				type: "error",
@@ -57,7 +59,9 @@ export const updateProgramKegiatan = async (formData, id) => {
 			return error.response.data;
 		} else {
 			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
 			toastLoading({
 				message: "Data gagal diubah " + message,
 				type: "error",
@@ -82,7 +86,9 @@ export const deleteProgramKegiatan = async id => {
 	} catch (error) {
 		console.clear();
 		const message =
-			error?.response?.data?.message || error.response?.data?.message || error.message;
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
 		toastLoading({
 			message: (
 				<>
@@ -174,10 +180,14 @@ export const makeOptionsPorgramKegiatan = () => {
 	};
 	const [optionsSubKegiatan, setOptionsSubKegiatan] = useState([]);
 
-	const getOptionsSubKegiatan = async ({ idProgram = null, idKegiatan = null } = {}) => {
+	const getOptionsSubKegiatan = async ({
+		idProgram = null,
+		idKegiatan = null,
+		unitId = null,
+	} = {}) => {
 		try {
 			const { data, success } = await getProgramKegiatan({
-				query: `?perPage=100&filter[type]=subKegiatan`,
+				query: `?perPage=100&filter[type]=subKegiatan&filter[unit_id]=${unitId}`,
 			});
 
 			if (success) {

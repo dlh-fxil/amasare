@@ -3,7 +3,6 @@ import axios from "@/lib/axios";
 
 export const makeOptionsUnits = () => {
 	const [optionsUnit, setUnitForOptions] = useState([]);
-
 	const getOptionsUnit = async () => {
 		try {
 			const { data, success } = await getUnit({
@@ -11,22 +10,21 @@ export const makeOptionsUnits = () => {
 			});
 			if (success) {
 				let temp = [];
-				data.map(i => {
+				data.map((i, key) => {
 					temp.push({
-						key: i.id,
+						key: key,
 						value: i.id,
-						label: `${i.nama} (${i.jenis})`,
+						label: `${i.nama}`,
 					});
 				});
 				return setUnitForOptions(temp);
 			}
 		} catch (error) {
-			if (error?.response?.status == 422) {
-				return console.log(Object.values(error.response.data.errors).flat());
-			} else {
-				console.error("message: ", error.response?.data?.message);
-				return console.error("Error: ", error.message);
-			}
+			const message =
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
+			return { errors: error, message: message };
 		}
 	};
 

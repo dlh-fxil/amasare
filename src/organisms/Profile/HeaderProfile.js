@@ -141,6 +141,7 @@ const ButtonProfile = ({ user = {}, reloadAktivitas = () => {} }) => {
 				returnSuccess={reloadAktivitas}
 				open={openModalKegiatan}
 				close={closeModalKegiatan}
+				pegawai={user}
 			/>
 			<ul className="flex py-1.5 items-center gap-2 justify-end">
 				<li className="font-semibold">

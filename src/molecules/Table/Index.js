@@ -9,7 +9,12 @@ import {
 } from "react-table";
 import React, { useMemo, useState, useEffect } from "react";
 import ColumnFilter from "./ColumnFilter";
-const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
+const App = ({
+	columns = [],
+	data = [],
+	loading = false,
+	setTableOption = () => {},
+} = {}) => {
 	const defaultColumn = useMemo(
 		() => ({
 			Filter: ColumnFilter,
@@ -43,9 +48,9 @@ const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
 			manualGlobalFilter: true,
 			manualFilters: true,
 			manualSortBy: true,
-			initialState: {
-				pageSize: 2,
-			},
+			// initialState: {
+			// 	pageSize: 2,
+			// },
 		},
 		useFilters,
 		useGlobalFilter,
@@ -53,18 +58,16 @@ const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
 		useFlexLayout,
 		useResizeColumns,
 	);
-	const [tableOption, setTableOption] = useState({});
 
 	useEffect(() => {
 		setTableOption({ globalFilter, filters, sortBy });
-
-		return () => {
-			setTableOption({});
-		};
+		// console.log(filters);
+		// return () => {
+		// 	setTableOption({});
+		// };
 	}, [globalFilter, filters, sortBy]);
-	//
 
-	const Table = () => (
+	return (
 		<table
 			className="w-full overflow-x-auto rounded-lg mx-auto"
 			{...getTableProps()}>
@@ -76,7 +79,7 @@ const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
 								scope="col"
 								className="w-full rouded-t-lg  max-w-full"
 								{...column.getHeaderProps()}>
-								<div className="flex flex-col justify-center items-center h-full bg-slate-900/75 py-2 px-2">
+								<div className="flex flex-col justify-center items-center h-full bg-slate-900/20 py-2 px-2">
 									{/* <div className='' {...column.getHeaderProps(column.getSortByToggleProps())}> */}
 									<div className="w-full" {...column.getSortByToggleProps()}>
 										{column.render("Header")}
@@ -167,7 +170,5 @@ const CustomTable = ({ columns = [], data = [], loading = false } = {}) => {
 			</tbody>
 		</table>
 	);
-
-	return { Table, tableOption };
 };
-export default CustomTable;
+export default App;

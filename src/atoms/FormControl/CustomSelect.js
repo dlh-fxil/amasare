@@ -7,7 +7,7 @@ const CustomSelect = ({ options = [], ...rest }, ref) => {
 		<Select
 			{...rest}
 			ref={ref}
-			className="text-base border-0 bg-transparent text-current"
+			className="font-normal text-sm w-full text-left z-10 border-0  text-slate-800"
 			classNamePrefix="select"
 			options={options}
 			noOptionsMessage={noOptionsMessage}

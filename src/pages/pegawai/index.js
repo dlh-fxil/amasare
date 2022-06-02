@@ -5,10 +5,12 @@ import { Button } from "@atoms/FormControl";
 import Head from "next/head";
 import Container from "@components/Container";
 import Icons from "@atoms/Icons";
-import CunstomTable from "@molecules/Table/CunstomTable";
+import Table from "@molecules/Table";
 import { getUser } from "@hooks/api/ManajemenUser/users";
 import { UserAddIcon } from "@heroicons/react/outline";
 import makeQueryParams from "@/lib/makeQueryParams";
+import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
+import Select from "@atoms/FormControl/Select";
 const App = () => {
 	const [formModalOpen, setFormModalOpen] = useState(false);
 	const [data, setData] = useState([]);
@@ -17,13 +19,13 @@ const App = () => {
 	const [defaultIncludes, setDefaultIncludes] = useState(
 		"unit,pangkat,jabatan",
 	);
+	const [loading, setLoading] = useState(true);
 	const [perPage, setPerPage] = useState(10);
 	const [query, setQuery] = useState("");
-
+	const [tableOption, setTableOption] = useState({});
+	const { optionsUnit, getOptionsUnit } = makeOptionsUnits();
 	const getDataUser = async () => {
 		const res = await getUser({ query });
-		console.log(res.data);
-
 		if (res.success) {
 			return setData(res.data);
 		}
@@ -34,13 +36,14 @@ const App = () => {
 			{
 				Header: "Nama",
 				width: 200,
-				Cell: cell => (
+				id: "name",
+				accessor: d => (
 					<div>
-						<div className="font font-semibold">{cell.row.original.nama}</div>
-						{cell.row.original.jenis_pegawai !== "PPNPNS" && (
+						<div className="font font-semibold">{d.nama}</div>
+						{d.jenis_pegawai !== "PPNPNS" && (
 							<>
-								<div>{cell.row.original.nip}</div>
-								<div>{cell.row.original.pangkat?.nama}</div>
+								<div>{d.nip}</div>
+								<div>{d.pangkat?.nama}</div>
 							</>
 						)}
 					</div>
@@ -58,7 +61,19 @@ const App = () => {
 			},
 			{
 				Header: "Sekretariat/Bidang",
-				accessor: "unit.nama",
+				accessor: d => d.unit?.nama,
+				id: "unit_id",
+				Filter: ({ column: { filterValue, setFilter } }) => (
+					<>
+						<div>{filterValue}</div>
+						<Select
+							instanceId="unit_id"
+							value={filterValue}
+							onChange={val => setFilter(val)}
+							options={optionsUnit}
+						/>
+					</>
+				),
 			},
 			{
 				Header: "Jabatan",
@@ -99,10 +114,8 @@ const App = () => {
 				),
 			},
 		],
-		[],
+		[optionsUnit],
 	);
-	const { Table, tableOption } = CunstomTable({ columns, data });
-
 	const makeQuery = useCallback(() => {
 		const { globalFilter, filters, sortBy } = tableOption;
 		const includes = defaultIncludes;
@@ -114,7 +127,7 @@ const App = () => {
 			includes,
 		});
 		setQuery(param);
-	}, [tableOption]);
+	}, []);
 	useEffect(() => {
 		if (!query) {
 			makeQuery();
@@ -123,14 +136,28 @@ const App = () => {
 			getDataUser();
 		}
 	}, [query]);
-
+	useEffect(() => {
+		makeQuery();
+	}, [tableOption]);
+	useEffect(() => {
+		getOptionsUnit();
+	}, []);
+	useEffect(() => {
+		if (data.length && optionsUnit.length) {
+			setLoading(false);
+		}
+	}, [data, optionsUnit]);
 	return (
 		<AppLayout>
 			<Head>
 				<title>Managemen Pegawai (User)</title>
 			</Head>
-			<Container>
-				<div className="flex p-4 items-center gap-2 max-w-full justify-end">
+			<div className="h-full flex flex-col">
+				<div className="flex shrink-0 p-4 items-center gap-2 max-w-full justify-end">
+					<Button rounded size="sm" onClick={getDataUser}>
+						<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
+						<span>Reload</span>
+					</Button>
 					<Button rounded size="sm" onClick={() => setFormModalOpen(true)}>
 						<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
 						<span>Tambah</span>
@@ -144,11 +171,17 @@ const App = () => {
 						<Icons icon="PrinterIcon" className="w-5 h-5 -mr-1" />
 					</Button>
 				</div>
-				<div className="w-full bg-slate-200 text-slate-900 overflow-auto">
-					{/* <div className="w-full bg-red-600"> */}
-					<Table />
+				<div className="w-full grow pb-2 overflow-x-auto">
+					{!loading && (
+						<Table
+							columns={columns}
+							data={data}
+							loading={loading}
+							setTableOption={setTableOption}
+						/>
+					)}
 				</div>
-			</Container>
+			</div>
 		</AppLayout>
 	);
 };

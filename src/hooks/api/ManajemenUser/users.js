@@ -46,17 +46,15 @@ export const getUser = async ({ query = null, url = null } = {}) => {
 			newUrl = url;
 		}
 		const res = await axios.get(newUrl);
-		console.log(res);
 		if (res.data.success) {
 			return res.data;
 		}
 	} catch (error) {
-		if (error?.response?.status == 422) {
-			return console.log(Object.values(error.response.data.errors).flat());
-		} else {
-			console.error("message: ", error.response?.data?.message);
-			return console.error("Error: ", error.message);
-		}
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		return { errors: error, message: message };
 	}
 };
 export const showUser = async id => {
