@@ -54,26 +54,26 @@ const Aktivitas = ({
 									/>
 									<span className="bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2"></span>
 								</div>
-								<div className="md:flex md:items-center md:justify-between w-full">
-									<div className="h-fit">
-										<div className="line-clamp-1 hover:line-clamp-none text-sm md:text-base md:font-semibold font-medium">
+								<div className="flex items-center justify-between w-full">
+									<div className="h-fit grow">
+										<div className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none text-sm md:text-base md:font-semibold font-medium">
 											{aktivitas?.createdBy?.name}
 										</div>
-										<div className="line-clamp-1 hover:line-clamp-none -mb-2.5 md:mb-0 text-sm -mt-1.5 md:mt-0 tracking-normal font-thin text-slate-700">
+										<div className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none -mb-2.5 md:mb-0 text-sm -mt-0.5 md:mt-0 tracking-normal font-thin text-slate-700">
 											{aktivitas?.createdBy?.jabatan?.nama}
 										</div>
 									</div>
 									{chekJam(aktivitas.mulai) ? (
 										<Moment
 											locale="id"
-											className="text-green-700 line-clamp-1 hover:line-clamp-none text-xs md:text-sm "
+											className="text-green-700 flex-shrink-0 line-clamp-1 hover:line-clamp-none touch:line-clamp-none w-fit text-xs md:text-sm "
 											fromNow>
 											{aktivitas.mulai}
 										</Moment>
 									) : (
 										<Moment
 											locale="id"
-											className="line-clamp-1 hover:line-clamp-none text-slate-800 text-xs md:text-sm"
+											className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none text-slate-800 text-xs md:text-sm"
 											format="dddd D MMM YYYY h:m:s">
 											{aktivitas.mulai}
 										</Moment>
