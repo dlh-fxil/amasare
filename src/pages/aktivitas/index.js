@@ -36,10 +36,15 @@ function ProgramKegiatan() {
 		setLoading(false);
 		return {};
 	};
-
+	const refresData = async () => {
+		getData(query).then(res => {
+			setData(res);
+			setOpenModal(false);
+		});
+	};
 	useEffect(async () => {
 		if (query) {
-			await getData(query).then(res => setData(res));
+			refresData();
 		}
 		return () => {
 			setData({});
@@ -58,7 +63,6 @@ function ProgramKegiatan() {
 	}, [dataFollow]);
 	useEffect(() => {
 		if (filters.length) {
-			// console.log(filters);
 			const param = makeQueryParams({
 				globalFilter,
 				filters,
@@ -77,11 +81,13 @@ function ProgramKegiatan() {
 		setDataFollow({});
 		setOpenModalFollow(false);
 	};
+	const closeModalFilter = () => {
+		setDataFollow({});
+		setOpenModalFilter(false);
+	};
+
 	const returnSuccess = newData => {
-		getData(query).then(res => {
-			setData(res);
-			setOpenModal(false);
-		});
+		refresData();
 	};
 	return (
 		<AppLayout>
@@ -100,9 +106,9 @@ function ProgramKegiatan() {
 									<span className="text-sm font-semibold">Print</span>
 								</button>
 								<button
-									className="w-full flex space-x-2 justify-center items-center bg-stone-500 hover:bg-slate-500 text-xl py-2 rounded-lg text-slate-50"
-									onClick={() => alert("to do list")}>
-									<span className="text-sm font-semibold">Download</span>
+									className="w-full flex space-x-2 justify-center items-center hover:bg-slate-500 text-xl py-2 rounded-lg text-slate-50"
+									onClick={refresData}>
+									<span className="text-sm font-semibold">Refresh</span>
 								</button>
 								<button
 									className="w-full flex space-x-2 justify-center items-center  hover:bg-slate-500 text-xl py-2 rounded-lg text-slate-50"
@@ -147,7 +153,6 @@ function ProgramKegiatan() {
 				}
 				<DialogModal
 					size="xl"
-					isOpen={openModalFollow}
 					setIsOpen={() => setOpenModalFollow(true)}
 					closeModal={closeModalFolowing}>
 					<div className="min-w-max">
@@ -155,6 +160,17 @@ function ProgramKegiatan() {
 							returnSuccess={returnSuccess}
 							close={closeModalFolowing}
 							dataFollow={dataFollow}
+						/>
+					</div>
+				</DialogModal>
+				<DialogModal
+					size="xl"
+					isOpen={openModalFilter}
+					closeModal={closeModalFilter}>
+					<div className="min-w-max">
+						<FormFilterAktivitas
+							setFilters={setFilters}
+							close={closeModalFilter}
 						/>
 					</div>
 				</DialogModal>
@@ -170,7 +186,10 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import { Select } from "@atoms/FormControl";
-const FormFilterAktivitas = ({ setFilters = () => {} } = {}) => {
+const FormFilterAktivitas = ({
+	setFilters = () => {},
+	close = () => {},
+} = {}) => {
 	const [tempTanggal, setTempTanggal] = useState("");
 	const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
 
@@ -269,7 +288,12 @@ const FormFilterAktivitas = ({ setFilters = () => {} } = {}) => {
 				</div>
 
 				<div className="form-footer">
-					<Button type="submit">Filter</Button>
+					<Button onClick={close} type="button">
+						Tutup
+					</Button>
+					<Button type="submit" color="red">
+						Filter
+					</Button>
 				</div>
 			</form>
 		</div>
