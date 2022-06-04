@@ -97,37 +97,23 @@ export const getPangkat = async ({ query = null, url = null }) => {
 		}
 	}
 };
-export const makeOptionsPangkat = () => {
-	const [optionsPangkat, setOptionsPangkat] = useState([]);
-
-	const getOptionsPangkat = async () => {
-		try {
-			const { data, success } = await getPangkat({
-				query: `?perPage=999`,
-			});
-			if (success) {
-				let temp = [];
-				data.map(i => {
-					temp.push({
-						key: i.id,
-						value: i.id,
-						label: `${i.nama} (${i.jenis})`,
-					});
+export const makeOptionsPangkat = async () => {
+	try {
+		const { data, success } = await getPangkat({
+			query: `?perPage=999`,
+		});
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp.push({
+					key: i.id,
+					value: i.id,
+					label: `${i.nama}`,
 				});
-				return setOptionsPangkat(temp);
-			}
-		} catch (error) {
-			const message =
-				error?.response?.data?.message ||
-				error.response?.data?.message ||
-				error.message;
-
-			return { errors: error, message: message };
+			});
+			return temp;
 		}
-		// }
-	};
-	return {
-		optionsPangkat,
-		getOptionsPangkat,
-	};
+	} catch (error) {
+		return [];
+	}
 };

@@ -309,6 +309,7 @@ const Button = (
 		loading && "cursor-wait",
 		disable && "cursor-not-allowed opacity-30",
 		"flex",
+		"group",
 		"items-center",
 		"justify-center",
 		"gap-1",

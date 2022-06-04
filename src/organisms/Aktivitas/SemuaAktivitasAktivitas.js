@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import Aktivitas from "./Aktivitas";
-import dynamic from "next/dynamic";
-// const Aktivitas = dynamic(() => import("./Aktivitas"), {
-// 	ssr: false,
-// });
-import { deleteAktivitas } from "@hooks/api/Kegiatan/aktivitas";
 import axios from "@/lib/axios";
 const SemuaAktivitas = ({
 	allDataAktivitas = {},
 	pageLoad = false,
-	returnSuccess = () => {},
-	setDataFollow = () => {},
+	responseFromChild = () => {},
 } = {}) => {
 	const [loading, setLoading] = useState(true);
 	const [dataAktivitas, setDataAktivitas] = useState([]);
 	const [nextPage, setNextPage] = useState("");
+
 	useEffect(() => {
 		if (allDataAktivitas?.links?.next) {
 			setNextPage(allDataAktivitas.links.next);
@@ -27,9 +22,11 @@ const SemuaAktivitas = ({
 			setDataAktivitas([]);
 		};
 	}, [allDataAktivitas]);
+
 	useEffect(() => {
 		setLoading(pageLoad);
 	}, [pageLoad]);
+
 	const appenData = url => {
 		setLoading(true);
 		axios.get(url).then(res => {
@@ -38,14 +35,7 @@ const SemuaAktivitas = ({
 			setLoading(false);
 		});
 	};
-	const unfollow = id => {
-		if (id) {
-			deleteAktivitas(id).then(res => {
-				// console.log(res);
-				returnSuccess(res);
-			});
-		}
-	};
+
 	return (
 		<div className="space-y-2">
 			{dataAktivitas.length > 0 ? (
@@ -62,12 +52,8 @@ const SemuaAktivitas = ({
 							<Aktivitas
 								key={item.id}
 								aktivitas={item}
-								setDataFollow={setDataFollow}
-								unfollow={unfollow}
+								responseFromChild={responseFromChild}
 							/>
-							// <div key={item.id} className="">
-							// 	{JSON.stringify(item)}
-							// </div>
 						))}
 					</div>
 				</Transition>

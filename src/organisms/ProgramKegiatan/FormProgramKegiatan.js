@@ -3,26 +3,30 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import React, { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { XIcon, UploadIcon } from "@heroicons/react/solid";
-import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
+import { makeOptionsUnit } from "@hooks/api/Kepegawaian/unit";
 import { schemaProgramKegiatan, formDefault } from "./IntialProgramKegiatan";
 import { YearPiccker } from "@atoms/FormControl/CustomDatePicker";
 import {
-	makeOptionsPorgramKegiatan,
 	updateProgramKegiatan,
 	addProgramKegiatan,
+	makeOptionsProgram,
+	makeOptionsKegiatan,
 } from "@hooks/api/Kegiatan/programKegiatan";
 function FormProgramKegiatan({
 	editData = {},
 	close = () => {},
 	returnSuccess = () => {},
 } = {}) {
-	const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
-	const {
-		getOptionsProgram,
-		optionsProgram,
-		optionsKegiatanProgram,
-		getOptionsKegiatanProgram,
-	} = makeOptionsPorgramKegiatan();
+	// const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
+	// const {
+	// 	getOptionsProgram,
+	// 	optionsProgram,
+	// 	optionsKegiatan,
+	// 	getOptionsKegiatan,
+	// } = makeOptionsPorgramKegiatan();
+	const [optionsUnit, setOptionsUnit] = useState([]);
+	const [optionsProgram, setOptionsProgram] = useState([]);
+	const [optionsKegiatan, setOptionsKegiatan] = useState([]);
 
 	const {
 		setValue,
@@ -55,24 +59,26 @@ function FormProgramKegiatan({
 
 	useEffect(() => {
 		if (!optionsUnit.length) {
-			getOptionsUnit();
+			makeOptionsUnit().then(d => setOptionsUnit(d));
 		}
 		return () => {};
 	}, []);
 
 	useEffect(() => {
 		if (type !== "program" && !optionsProgram.length) {
-			getOptionsProgram();
+			makeOptionsProgram().then(d => setOptionsProgram(d));
 		}
 	}, [type]);
 	useEffect(() => {
+		console.log(optionsProgram);
+	}, [optionsProgram]);
+	useEffect(async () => {
 		if (type == "program") {
 			setValue("id_program", null);
 			setValue("id_kegiatan", null);
 			setValue("kode_kegiatan", "");
 			setValue("kode_sub_kegiatan", "");
 		} else if (idProgram && type == "kegiatan") {
-			console.log(optionsProgram);
 			const data = optionsProgram;
 			const dataSel = data.filter(p => p.value == idProgram);
 			setValue("kode_urusan", dataSel[0]?.object.kode_urusan);
@@ -81,10 +87,10 @@ function FormProgramKegiatan({
 			setValue("id_kegiatan", null);
 			setValue("kode_sub_kegiatan", "");
 			setValue("unit_id", dataSel[0]?.object.unit_id);
-		} else if (idProgram && !optionsKegiatanProgram.length > 0) {
-			getOptionsKegiatanProgram(idProgram);
+		} else if (idProgram && !optionsKegiatan.length > 0) {
+			await makeOptionsKegiatan().then(d => setOptionsKegiatan(d));
 		} else if (idKegiatan) {
-			const data = optionsKegiatanProgram;
+			const data = optionsKegiatan;
 			const dataSel = data.filter(p => p.value == idKegiatan);
 			setValue("kode_urusan", dataSel[0]?.object.kode_urusan);
 			setValue("kode_bidang_urusan", dataSel[0]?.object.kode_bidang_urusan);
@@ -92,7 +98,7 @@ function FormProgramKegiatan({
 			setValue("kode_kegiatan", dataSel[0]?.object.kode_kegiatan);
 			setValue("unit_id", dataSel[0]?.object.unit_id);
 		}
-	}, [type, idProgram, optionsProgram, idKegiatan, optionsKegiatanProgram]);
+	}, [type, idProgram, optionsProgram, idKegiatan, optionsKegiatan]);
 	const submitForm = (form, event) => {
 		event.preventDefault();
 		console.log(form);
@@ -113,10 +119,8 @@ function FormProgramKegiatan({
 		}
 	};
 	return (
-		<div className="min-h-fit overflow-auto">
-			<div className="text-center w-full max-w-screen-xl  text-lg py-3 font-bold uppercase form-header">
-				Form Program kegiatan
-			</div>
+		<div className="">
+			<div className="form-header">Form Program kegiatan</div>
 			<form className="form" onSubmit={handleSubmit(submitForm)}>
 				<div className="flex mx-4 py-4 flex-wrap items-center">
 					<div className="flex-1 mx-2 sm:mx-4 ">
@@ -176,14 +180,14 @@ function FormProgramKegiatan({
 									</p>
 								)
 							)}
-							{optionsKegiatanProgram.length > 0 &&
+							{optionsKegiatan.length > 0 &&
 							type !== "kegiatan" &&
 							idProgram ? (
 								<Controller
 									render={({ field: { onChange, value } }) => (
 										<ComboBox
 											value={idKegiatan}
-											options={optionsKegiatanProgram}
+											options={optionsKegiatan}
 											placeholder="Pilih Kegiatan"
 											autoComplete="selectedKegiatanProgram"
 											onChange={e => onChange(e)}
@@ -456,7 +460,7 @@ function FormProgramKegiatan({
 						</div>
 					</>
 				)}
-				<div className="flex items-center flex-wrap py-4  sm:px-8 space-x-4 form-footer justify-end px-6  max-w-full">
+				<div className="flex form-footer">
 					<Button onClick={resetForm} type="button" color="red">
 						<XIcon className="-ml-2 w-4 h-4" />
 						Tutup

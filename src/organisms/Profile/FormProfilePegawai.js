@@ -8,25 +8,25 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { updateUser, showUser } from "@hooks/api/ManajemenUser/users";
-import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
+import { makeOptionsUnit } from "@hooks/api/Kepegawaian/unit";
 import { makeOptionsSubUnit } from "@hooks/api/Kepegawaian/subUnit";
 import { makeOptionsJabatan } from "@hooks/api/Kepegawaian/jabatan";
 import { makeOptionsPangkat } from "@hooks/api/Kepegawaian/pangkat";
 const FormProfilePegawai = ({
 	dataUser = {},
-	cancel = () => {},
+	close = () => {},
 	returnSuccess = () => {},
 } = {}) => {
 	const [loading, setLoading] = useState(true);
 	const [invalids, setInvalids] = useState({});
-	const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
-	const { getOptionsSubUnit, optionsSubUnit } = makeOptionsSubUnit();
-	const { getOptionsJabatan, optionsJabatan } = makeOptionsJabatan();
-	const { getOptionsPangkat, optionsPangkat } = makeOptionsPangkat();
+	const [optionsJabatan, setOptionsJabatan] = useState([]);
+	const [optionsPangkat, setOptionsPangkat] = useState([]);
+	const [optionsUnit, setOptionsUnit] = useState([]);
+	const [optionsSubUnit, setOptionsSubUnit] = useState([]);
 	const makeOptions = async () => {
-		await getOptionsPangkat();
-		await getOptionsJabatan();
-		await getOptionsUnit();
+		await makeOptionsJabatan().then(d => setOptionsJabatan(d));
+		await makeOptionsPangkat().then(d => setOptionsPangkat(d));
+		await makeOptionsUnit().then(d => setOptionsUnit(d));
 	};
 
 	useEffect(() => {
@@ -108,7 +108,9 @@ const FormProfilePegawai = ({
 	useEffect(() => {
 		setLoading(true);
 		if (unitId) {
-			getOptionsSubUnit(unitId).finally(() => setLoading(false));
+			makeOptionsSubUnit(unitId)
+				.then(d => setOptionsSubUnit(d))
+				.finally(() => setLoading(false));
 		} else {
 			setValue("sub_unit_id", "", { shouldValidate: true });
 			setLoading(false);
@@ -137,7 +139,7 @@ const FormProfilePegawai = ({
 		if (dataUser && dataUser?.id) {
 			updateUser(formData, dataUser.id).then(response => {
 				if (response.success) {
-					// setData(response.data);
+					close();
 					returnSuccess(response.data);
 					reset(undefined, {
 						keepValues: true,
@@ -156,164 +158,171 @@ const FormProfilePegawai = ({
 	};
 
 	return (
-		<form className="form" onSubmit={handleSubmit(submitForm)}>
-			<div className="flex p-4 flex-col gap-1">
-				<div className="flex justify-around p-2 mx-2 rounded-full bg-white bg-opacity-30 items-center flex-1">
-					<Radio
-						{...register("jenis_pegawai")}
-						id="pns"
-						text="PNS"
-						value="PNS"
-					/>
-					<Radio
-						{...register("jenis_pegawai")}
-						id="p3k"
-						text="P3K"
-						value="P3K"
-						color="green"
-					/>
-					<Radio
-						{...register("jenis_pegawai")}
-						id="ppnpns"
-						text="PPNPNS"
-						value="PPNPNS"
-						color="sky"
-					/>
-				</div>
-
-				<Controller
-					render={({ field }) => (
-						<Input
-							{...field}
-							placeholder="Nama Sesua SK"
-							error={errors?.name?.message || checkErrors("nama")}
-							autoFocus
+		<div>
+			<div className="form-header">Edit Profile</div>
+			<form className="form" onSubmit={handleSubmit(submitForm)}>
+				<div className="flex p-4 flex-col gap-1">
+					<div className="flex justify-around p-2 mx-2 rounded-full bg-white bg-opacity-30 items-center flex-1">
+						<Radio
+							{...register("jenis_pegawai")}
+							id="pns"
+							text="PNS"
+							value="PNS"
 						/>
-					)}
-					name="name"
-					control={control}
-				/>
-				{jenisPegawai !== "PPNPNS" && (
+						<Radio
+							{...register("jenis_pegawai")}
+							id="p3k"
+							text="P3K"
+							value="P3K"
+							color="green"
+						/>
+						<Radio
+							{...register("jenis_pegawai")}
+							id="ppnpns"
+							text="PPNPNS"
+							value="PPNPNS"
+							color="sky"
+						/>
+					</div>
+
 					<Controller
 						render={({ field }) => (
 							<Input
 								{...field}
-								placeholder="NIP"
-								error={errors?.nip?.message || checkErrors("nip")}
+								placeholder="Nama Sesua SK"
+								error={errors?.name?.message || checkErrors("nama")}
+								autoFocus
 							/>
 						)}
-						name="nip"
+						name="name"
 						control={control}
 					/>
-				)}
-				<Controller
-					render={({ field }) => (
-						<Input
-							{...field}
-							placeholder="Nomor Whatsapp"
-							error={errors?.no_wa?.message || checkErrors("no_wa")}
+					{jenisPegawai !== "PPNPNS" && (
+						<Controller
+							render={({ field }) => (
+								<Input
+									{...field}
+									placeholder="NIP"
+									error={errors?.nip?.message || checkErrors("nip")}
+								/>
+							)}
+							name="nip"
+							control={control}
 						/>
 					)}
-					name="no_wa"
-					control={control}
-				/>
-				<Controller
-					render={({ field }) => (
-						<Input
-							{...field}
-							placeholder="Nomor HP"
-							error={errors?.no_hp?.message || checkErrors("no_wa")}
+					<Controller
+						render={({ field }) => (
+							<Input
+								{...field}
+								placeholder="Nomor Whatsapp"
+								error={errors?.no_wa?.message || checkErrors("no_wa")}
+							/>
+						)}
+						name="no_wa"
+						control={control}
+					/>
+					<Controller
+						render={({ field }) => (
+							<Input
+								{...field}
+								placeholder="Nomor HP"
+								error={errors?.no_hp?.message || checkErrors("no_wa")}
+							/>
+						)}
+						name="no_hp"
+						control={control}
+					/>
+					<Controller
+						render={({ field }) => (
+							<Input
+								{...field}
+								placeholder="Eselon"
+								error={errors?.eselon?.message || checkErrors("no_wa")}
+							/>
+						)}
+						name="eselon"
+						control={control}
+					/>
+					{optionsPangkat && jenisPegawai !== "PPNPNS" && (
+						<Controller
+							render={({ field: { onChange, value } }) => (
+								<ComboBox
+									placeholder="Pangakat"
+									options={optionsPangkat}
+									value={value}
+									error={
+										errors?.pangkat_id?.message || checkErrors("pangkat_id")
+									}
+									onChange={e => onChange(e)}
+								/>
+							)}
+							name="pangkat_id"
+							control={control}
 						/>
 					)}
-					name="no_hp"
-					control={control}
-				/>
-				<Controller
-					render={({ field }) => (
-						<Input
-							{...field}
-							placeholder="Eselon"
-							error={errors?.eselon?.message || checkErrors("no_wa")}
+					{optionsJabatan && (
+						<Controller
+							render={({ field: { onChange, value } }) => (
+								<ComboBox
+									value={value}
+									options={optionsJabatan}
+									placeholder="Jabatan"
+									error={
+										errors?.jabatan_id?.message || checkErrors("jabatan_id")
+									}
+									onChange={e => onChange(e)}
+								/>
+							)}
+							name="jabatan_id"
+							control={control}
 						/>
 					)}
-					name="eselon"
-					control={control}
-				/>
-				{optionsPangkat && jenisPegawai !== "PPNPNS" && (
-					<Controller
-						render={({ field: { onChange, value } }) => (
-							<ComboBox
-								placeholder="Pangakat"
-								options={optionsPangkat}
-								value={value}
-								error={errors?.pangkat_id?.message || checkErrors("pangkat_id")}
-								onChange={e => onChange(e)}
-							/>
-						)}
-						name="pangkat_id"
-						control={control}
-					/>
-				)}
-				{optionsJabatan && (
-					<Controller
-						render={({ field: { onChange, value } }) => (
-							<ComboBox
-								value={value}
-								options={optionsJabatan}
-								placeholder="Jabatan"
-								error={errors?.jabatan_id?.message || checkErrors("jabatan_id")}
-								onChange={e => onChange(e)}
-							/>
-						)}
-						name="jabatan_id"
-						control={control}
-					/>
-				)}
-				{optionsUnit && (
-					<Controller
-						render={({ field: { onChange, value } }) => (
-							<ComboBox
-								value={value}
-								options={optionsUnit}
-								placeholder="Pilih Bidang/Sekreariat"
-								error={errors?.unit_id?.message || checkErrors("unit_id")}
-								onChange={e => onChange(e)}
-							/>
-						)}
-						name="unit_id"
-						control={control}
-					/>
-				)}
+					{optionsUnit && (
+						<Controller
+							render={({ field: { onChange, value } }) => (
+								<ComboBox
+									value={value}
+									options={optionsUnit}
+									placeholder="Pilih Bidang/Sekreariat"
+									error={errors?.unit_id?.message || checkErrors("unit_id")}
+									onChange={e => onChange(e)}
+								/>
+							)}
+							name="unit_id"
+							control={control}
+						/>
+					)}
 
-				{optionsSubUnit && unitId && (
-					<Controller
-						render={({ field: { onChange, value } }) => (
-							<ComboBox
-								options={optionsSubUnit}
-								value={value}
-								placeholder="Sub Bagian/Seksi"
-								error={
-									errors?.sub_unit_id?.message || checkErrors("sub_unit_id")
-								}
-								onChange={e => onChange(e)}
-							/>
-						)}
-						name="sub_unit_id"
-						control={control}
-					/>
-				)}
-			</div>
+					{optionsSubUnit && unitId && (
+						<Controller
+							render={({ field: { onChange, value } }) => (
+								<ComboBox
+									options={optionsSubUnit}
+									value={value}
+									placeholder="Sub Bagian/Seksi"
+									error={
+										errors?.sub_unit_id?.message || checkErrors("sub_unit_id")
+									}
+									onChange={e => onChange(e)}
+								/>
+							)}
+							name="sub_unit_id"
+							control={control}
+						/>
+					)}
+				</div>
 
-			<div className="flex items-center gap-4 justify-end p-4 bg-slate-500 bg-opacity-20">
-				<Button type="button" loading={loading} onClick={cancel} color="red">
-					Tutup
-				</Button>
-				<Button disable={loading} loading={loading} type="submit">
-					Simpan
-				</Button>
-				{/* <div>{JSON.stringify(data)}</div> */}
-			</div>
-		</form>
+				<div className="flex items-center gap-4 justify-end p-4 bg-slate-500 bg-opacity-20">
+					<Button type="button" loading={loading} onClick={close} color="red">
+						Tutup
+					</Button>
+					<Button disable={loading} loading={loading} type="submit">
+						Simpan
+					</Button>
+					{/* <div>{JSON.stringify(data)}</div> */}
+				</div>
+			</form>
+		</div>
 	);
 };
 

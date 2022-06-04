@@ -2,7 +2,7 @@ import Icons from "@atoms/Icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
 const MenuItem = ({
-	item: { id, title, notifications, icon, route },
+	item: { title, notifications, icon, route },
 	onClick,
 	selected,
 }) => {
@@ -12,18 +12,18 @@ const MenuItem = ({
 		<Link href={route ?? "/"}>
 			<a
 				className={`
-          'w-full  flex items-center ml-2  px-4 sm:px-1 xl:px-3 justify-start sm:justify-center xl:justify-start py-2 cursor-pointer',
+          'w-full flex items-center ml-2  px-4 sm:px-1 xl:px-3 justify-start sm:justify-center xl:justify-start py-2 cursor-pointer',
           ${
 						router.pathname == route
-							? "bg-gradient-to-l pointer-events-none shadow shadow-slate-600 from-slate-800 to-blue-900 text-lime-200 my-1 menu-items rounded-l-full relative"
+							? "pointer-events-none shadow-md shadow-blue-500 bg-slate-200 text-slate-700 my-1 menu-items rounded-l-full relative"
 							: ""
-					}
+					} ${selected ? "cursor-wait" : ""}
         `}
-				onClick={() => onClick(id)}>
+				onClick={() => onClick(route)}>
 				<Icons
 					icon={icon}
 					className={`w-fit h-5 ${
-						router.pathname == route ? " text-yellow-200" : ""
+						router.pathname == route ? " text-blue-500" : ""
 					}`}
 				/>
 				<div className="block ml-2">{title}</div>

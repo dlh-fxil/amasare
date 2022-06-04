@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Head from "next/head";
 import { useAuth } from "@/hooks/api/auth";
 import { ToastContainer } from "react-toastify";
 import ReactTooltip from "react-tooltip";
@@ -12,7 +13,7 @@ import "moment/locale/id";
 import Content from "./Partials/Content";
 registerLocale("id", id);
 
-const AppLayout = ({ header, children, checkIsAccessible }) => {
+const AppLayout = ({ title = "Amasare", children, checkIsAccessible }) => {
 	useAuth({ middleware: "auth" });
 	const [showSidebar, onSetShowSidebar] = useState(false);
 	if (checkIsAccessible) {
@@ -32,7 +33,10 @@ const AppLayout = ({ header, children, checkIsAccessible }) => {
 	});
 
 	return (
-		<div className="flex relative min-h-screen max-w-screen-2xl mx-auto">
+		<>
+			<Head>
+				<title>{title}</title>
+			</Head>
 			<ToastContainer
 				position="top-right"
 				autoClose={5000}
@@ -47,23 +51,26 @@ const AppLayout = ({ header, children, checkIsAccessible }) => {
 			{isTooltipVisible && (
 				<ReactTooltip bodyMode globalEventOff="click blur" />
 			)}
-			{showSidebar && (
-				<Sidebar
+			<div className="content relative">
+				{showSidebar && (
+					<Sidebar
+						onSidebarHide={() => {
+							onSetShowSidebar(false);
+						}}
+						showSidebar={showSidebar}
+					/>
+				)}
+
+				<Content
 					onSidebarHide={() => {
-						onSetShowSidebar(false);
+						onSetShowSidebar(true);
 					}}
+					title={title}
+					children={children}
 					showSidebar={showSidebar}
 				/>
-			)}
-
-			<Content
-				onSidebarHide={() => {
-					onSetShowSidebar(true);
-				}}
-				children={children}
-				showSidebar={showSidebar}
-			/>
-		</div>
+			</div>
+		</>
 	);
 };
 

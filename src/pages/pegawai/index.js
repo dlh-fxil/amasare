@@ -1,15 +1,12 @@
-import React, { useMemo, useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 import AppLayout from "@components/Layouts/AppLayout";
 import { Button } from "@atoms/FormControl";
-import Head from "next/head";
-import Container from "@components/Container";
 import Icons from "@atoms/Icons";
 import Table from "@molecules/Table";
 import { getUser } from "@hooks/api/ManajemenUser/users";
-import { UserAddIcon } from "@heroicons/react/outline";
 import makeQueryParams from "@/lib/makeQueryParams";
-import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
+import { makeOptionsUnit } from "@hooks/api/Kepegawaian/unit";
 import Select from "@atoms/FormControl/Select";
 const App = () => {
 	const [formModalOpen, setFormModalOpen] = useState(false);
@@ -19,16 +16,27 @@ const App = () => {
 	const [defaultIncludes, setDefaultIncludes] = useState(
 		"unit,pangkat,jabatan",
 	);
-	const [loading, setLoading] = useState(true);
 	const [perPage, setPerPage] = useState(10);
+
+	const [defaultQuery, setdefaultQuery] = useState(
+		"?perPage=" + perPage + "&include" + defaultIncludes,
+	);
+	const [loading, setLoading] = useState(true);
 	const [query, setQuery] = useState("");
+
 	const [tableOption, setTableOption] = useState({});
-	const { optionsUnit, getOptionsUnit } = makeOptionsUnits();
-	const getDataUser = async () => {
+	const [optionsUnit, setOptionsUnit] = useState([]);
+	const { resetTable } = tableOption;
+
+	const getDataUser = async (fresh = false) => {
 		const res = await getUser({ query });
 		if (res.success) {
 			return setData(res.data);
 		}
+	};
+
+	const reloadData = () => {
+		resetTable();
 	};
 
 	const columns = useMemo(
@@ -77,6 +85,7 @@ const App = () => {
 			},
 			{
 				Header: "Jabatan",
+				id: "jabatan",
 				accessor: "jabatan.nama",
 			},
 			{
@@ -116,7 +125,8 @@ const App = () => {
 		],
 		[optionsUnit],
 	);
-	const makeQuery = useCallback(() => {
+
+	const makeQuery = () => {
 		const { globalFilter, filters, sortBy } = tableOption;
 		const includes = defaultIncludes;
 		const param = makeQueryParams({
@@ -127,47 +137,58 @@ const App = () => {
 			includes,
 		});
 		setQuery(param);
-	}, []);
+	};
+
 	useEffect(() => {
-		if (!query) {
-			makeQuery();
-		}
 		if (query) {
 			getDataUser();
 		}
 	}, [query]);
+
 	useEffect(() => {
 		makeQuery();
 	}, [tableOption]);
+
 	useEffect(() => {
-		getOptionsUnit();
+		makeOptionsUnit().then(d => setOptionsUnit(d));
 	}, []);
+
 	useEffect(() => {
 		if (data.length && optionsUnit.length) {
 			setLoading(false);
 		}
 	}, [data, optionsUnit]);
+
 	return (
-		<AppLayout>
-			<Head>
-				<title>Managemen Pegawai (User)</title>
-			</Head>
-			<div className="h-full flex flex-col">
+		<AppLayout title="Manajemen Pegawai (User)">
+			<div className="h-full flex flex-col px-4 card">
 				<div className="flex shrink-0 p-4 items-center gap-2 max-w-full justify-end">
-					<Button rounded size="sm" onClick={getDataUser}>
+					<Button data-tip="Refresh" rounded size="sm" onClick={reloadData}>
 						<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-						<span>Reload</span>
+						<span className="pointer-events-none">Refresh</span>
 					</Button>
-					<Button rounded size="sm" onClick={() => setFormModalOpen(true)}>
+					<Button
+						data-tip="Tambah pegawai / user baru"
+						rounded
+						size="sm"
+						onClick={() => setFormModalOpen(true)}>
 						<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-						<span>Tambah</span>
+						<span className="pointer-events-none">Pegawai Baru</span>
 					</Button>
-					<Button onClick={() => alert("to do list...")} rounded size="sm">
-						<span>Download</span>
+					<Button
+						data-tip="Belum Buat"
+						onClick={() => alert("to do list...")}
+						rounded
+						size="sm">
+						<span className="pointer-events-none">Download</span>
 						<Icons icon="DownloadIcon" className="w-5 h-5 -mr-1" />
 					</Button>
-					<Button onClick={() => alert("to do list...")} rounded size="sm">
-						<span>Cetak</span>
+					<Button
+						data-tip="Belum Buat"
+						onClick={() => alert("to do list...")}
+						rounded
+						size="sm">
+						<span className="pointer-events-none">Cetak</span>
 						<Icons icon="PrinterIcon" className="w-5 h-5 -mr-1" />
 					</Button>
 				</div>

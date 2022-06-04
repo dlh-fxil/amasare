@@ -1,22 +1,22 @@
 import DialogModal from "@atoms/Modal";
 import FormAktivitas from "@organisms/Aktivitas/FormAktivitas";
 import React from "react";
-
+import { useAuth } from "@hooks/api/auth";
 const ModalAktivitas = ({
 	open = false,
 	close = () => {},
 	editAktivitas = {},
-	returnSuccess = () => {},
-	pegawai = {},
+	responseFromChild = () => {},
 } = {}) => {
+	const { user } = useAuth({ middleware: "auth" });
 	return (
 		<DialogModal size="xl" isOpen={open} closeModal={close}>
 			<div className="min-w-max">
 				<FormAktivitas
-					returnSuccess={returnSuccess}
+					responseFromChild={responseFromChild}
 					close={close}
 					editData={editAktivitas}
-					pegawai={pegawai}
+					user={user}
 				/>
 			</div>
 		</DialogModal>

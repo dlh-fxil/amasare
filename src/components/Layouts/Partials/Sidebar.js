@@ -5,7 +5,7 @@ import Logo from "./Logo";
 import sidebarItems from "@/sataticData/sideBarItems";
 import MenuItem from "./MenuItem";
 const Sidebar = ({ onSidebarHide, showSidebar }) => {
-	const [selected, setSelected] = useState("0");
+	const [selected, setSelected] = useState("");
 	const { dashOffset, indicatorWidth, precentage } = useSpring({
 		dashOffset: 26.015,
 		indicatorWidth: 70,
@@ -15,16 +15,12 @@ const Sidebar = ({ onSidebarHide, showSidebar }) => {
 	});
 	return (
 		<div
-			className={`fixed h-screen bg-card w-full sm:w-64 z-40 sm:z-10 ${
+			className={`sm:fixed absolute inset-0 sm:inset-auto h-screen bg-slate-100 w-full overflow-auto sm:w-64 z-40 sm:z-10 ${
 				showSidebar ? "flex flex-col" : "hidden"
 			}`}>
-			<Logo
-				className=" topbar"
-				showSidebar={showSidebar}
-				onSidebarHide={onSidebarHide}
-			/>
+			<Logo showSidebar={showSidebar} onSidebarHide={onSidebarHide} />
 
-			<div className="flex-grow bg-slate-900 text-white overflow-x-hidden overflow-y-auto flex flex-col">
+			<div className="flex-grow group bg-slate-900  w-full text-white overflow-x-auto overflow-y-auto flex flex-col ">
 				{sidebarItems[0].map((i, key) => (
 					<MenuItem
 						key={key}
@@ -33,7 +29,7 @@ const Sidebar = ({ onSidebarHide, showSidebar }) => {
 						selected={selected}
 					/>
 				))}
-				<div className="mt-8 mb-0 font-bold px-3 block sm:hidden xl:block">
+				<div className="mt-8 mb-0 font-bold block sm:hidden xl:block">
 					SHORTCUTS
 				</div>
 				{sidebarItems[1].map((i, key) => (
@@ -48,14 +44,14 @@ const Sidebar = ({ onSidebarHide, showSidebar }) => {
 				<div className="sm:hidden">
 					<ProfileCard />
 				</div>
-				<div className="w-full sm:p-3 h-fit  sm:block sm:h-20 xl:h-32">
+				<div className="w-full sm:p-3 h-fit   sm:block sm:h-20 xl:h-32">
 					<div
 						className="sm:rounded-xl w-full h-full px-3 sm:px-0 xl:px-3 overflow-hidden"
 						style={{
 							backgroundImage:
 								"url('https://assets.codepen.io/3685267/res-react-dash-usage-card.svg')",
 						}}>
-						<div className="sm:pt- pt-2">
+						<div className="pt-2">
 							<div className="sm: sm:flex-col-reverse flex">
 								<div className="flex-shrink-0">
 									<div className="font-bold text-gray-300 text-sm">
@@ -116,7 +112,7 @@ const ProfileCard = () => {
 		};
 	}, [user]);
 	return (
-		<div className="w-full bg-gradient-to-t to-transparent via-slate-50 h-full from-slate-200  rounded-lg">
+		<div className="w-full mb-3  rounded-lg">
 			<div className="flex justify-center">
 				<div className="relative w-28">
 					<img src={urlImage} alt="foto-profile" className="rounded-full" />
@@ -124,23 +120,23 @@ const ProfileCard = () => {
 				</div>
 			</div>
 			<div className="flex flex-col text-center px-2 mt-3">
-				<span className="font-medium underline whitespace-normal text-black">
+				<span className="font-medium underline whitespace-normal text-white">
 					{user.nama}
 				</span>
-				<span className="text-sm text-slate-700">{user?.pangkat?.nama}</span>
-				<span className="text-sm text-slate-500">NIP.{user.nip}</span>
-				<span className="text-md text-slate-800">{user?.jabatan?.nama}</span>
+				<span className="text-sm text-slate-300">{user?.pangkat?.nama}</span>
+				<span className="text-sm text-slate-200">NIP.{user.nip}</span>
+				<span className="text-md text-slate-100">{user?.jabatan?.nama}</span>
 			</div>
 
 			<div className="mt-3 p-2 flex items-center gap-2 bg-slate-800 bg-opacity-20">
 				<Link href="/profile">
-					<button className="bg-slate-900 w-full text-sm px-2 py-1 text-white rounded hover:shadow hover:bg-slate-800 uppercase ">
+					<button className="bg-slate-700 w-full text-sm px-2 py-2 text-white rounded hover:shadow hover:bg-slate-800 uppercase ">
 						Profil
 					</button>
 				</Link>
 				<button
 					onClick={logout}
-					className="bg-rose-900 text-sm px-2 py-1  w-full text-white rounded hover:shadow hover:bg-rose-800 uppercase ">
+					className="bg-rose-900 text-sm px-2 py-2  w-full text-white rounded hover:shadow hover:bg-rose-800 uppercase ">
 					Keluar
 				</button>
 			</div>

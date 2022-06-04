@@ -7,11 +7,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import AktivitasUser from "@organisms/Profile/AktivitasUser";
 import UraianTugasUser from "@organisms/Profile/UraianTugasUser";
 const App = () => {
-	const { user } = useAuth({ middleware: "auth" });
+	const { user, mutate } = useAuth({ middleware: "auth" });
 	const [userId, setUserId] = useState(0);
 	const childCompRef = useRef();
 	const reloadAktivitas = params => {
 		childCompRef.current.reload(params);
+	};
+	const reloadProfile = params => {
+		mutate();
 	};
 	useEffect(() => {
 		if (user?.id) {
@@ -24,19 +27,20 @@ const App = () => {
 				<title>Profile</title>
 			</Head>
 
-			<HeaderProfile user={user} reloadAktivitas={reloadAktivitas} />
-			<Container>
-				<div className="w-full py-2 sm:py-0 flex flex-col gap-2 lg:flex-row">
-					{user?.jabatan && (
-						<div className="lg:w-1/4 h-fit flex-shrink-0">
-							<UraianTugasUser jabatan={user?.jabatan} />
-						</div>
-					)}
-					<div className="flex-grow">
-						<AktivitasUser ref={childCompRef} userId={userId} />
-					</div>
+			<HeaderProfile
+				user={user}
+				reloadProfile={reloadProfile}
+				reloadAktivitas={reloadAktivitas}
+			/>
+
+			{user?.jabatan && (
+				<div className="card-content">
+					<UraianTugasUser reload={reloadProfile} jabatan={user?.jabatan} />
 				</div>
-			</Container>
+			)}
+			<div className="card-content">
+				<AktivitasUser ref={childCompRef} userId={userId} />
+			</div>
 		</AppLayout>
 	);
 };

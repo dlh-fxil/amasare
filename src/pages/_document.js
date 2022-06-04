@@ -16,7 +16,7 @@ class MyDocument extends Document {
 					/>
 					<link rel="shortcut icon" href="/icon.png" />
 				</Head>
-				<body className="antialiased">
+				<body className="antialiased body">
 					<Main />
 					<NextScript />
 				</body>

@@ -7,16 +7,20 @@ import {
 	updateUraianTugas,
 } from "@hooks/api/Kepegawaian/uraianTugas";
 import { Button, Input, Textarea, ComboBox, Radio } from "@atoms/FormControl";
-import { makeOptionsJabatan } from "@hooks/api/Kepegawaian/jabatan";
+import {
+	makeOptionsJabatan,
+	createOptionJabatan,
+	getJabatan,
+} from "@hooks/api/Kepegawaian/jabatan";
 function FormUraianTugas({
 	dataEdit = {},
 	returnSuccess = () => {},
 	withJabatan = false,
-	cancel = () => {},
+	close = () => {},
 	jabatanId = {},
 }) {
 	const [loading, setLoading] = useState(false);
-	const { getOptionsJabatan, optionsJabatan } = makeOptionsJabatan();
+	const [optionsJabatan, setOptionsJabatan] = useState([]);
 	const schema = yup
 		.object({
 			jenis_tugas: yup.string().required("Jenis uraian tugas harus diisi"),
@@ -58,14 +62,14 @@ function FormUraianTugas({
 		reValidateMode: "onChange",
 	});
 	useEffect(() => {
-		getOptionsJabatan();
+		makeOptionsJabatan().then(options => setOptionsJabatan(options));
 	}, []);
 
 	const resetForm = () => {
 		reset(undefined, {
 			keepDefaultValues: true,
 		});
-		cancel();
+		close();
 	};
 	const submitForm = async (form, event) => {
 		event.preventDefault();
@@ -73,9 +77,8 @@ function FormUraianTugas({
 		if (dataEdit && dataEdit?.id) {
 			updateUraianTugas(form, dataEdit.id).then(response => {
 				if (response.success) {
-					if (returnSuccess) {
-						returnSuccess(response.data);
-					}
+					returnSuccess(response.data);
+					close();
 					resetForm();
 				} else {
 					console.warn(response);
@@ -86,9 +89,8 @@ function FormUraianTugas({
 			addUraianTugas(form).then(response => {
 				if (response.success) {
 					resetForm();
-					if (returnSuccess) {
-						returnSuccess(response.data);
-					}
+					console.log(response);
+					returnSuccess(response.data);
 				} else {
 					console.warn(response);
 				}
@@ -99,98 +101,90 @@ function FormUraianTugas({
 
 	return (
 		<div className="w-full">
-			<form onSubmit={handleSubmit(submitForm)}>
-				<div>
-					<div className="flex flex-col gap-2">
-						<div className="flex justify-center gap-2 sm:gap-5 p-2 mx-2 rounded-full bg-white bg-opacity-30 items-center flex-1">
-							<Radio
-								{...register("jenis_tugas")}
-								id="Tugas Pokok"
-								text="Tugas Pokok"
-								value="Tugas Pokok"
-								color="green"
-								labelFont="font-semibold sm:tracking-widest"
-							/>
-							<Radio
-								{...register("jenis_tugas")}
-								id="Tugas Tambahan"
-								text="Tugas Tambahan"
-								value="Tugas Tambahan"
-								labelFont="font-semibold upercase sm:tracking-widest"
-							/>
-						</div>
-						{optionsJabatan && (
-							<Controller
-								render={({ field: { onChange, value } }) => (
-									<ComboBox
-										value={value}
-										options={optionsJabatan}
-										placeholder="Jabatan"
-										error={errors?.jabatan_id?.message}
-										onChange={e => onChange(e)}
-										disabled={!withJabatan}
-									/>
-								)}
-								name="jabatan_id"
-								control={control}
+			<div className="form-header">Formulir Uraian Tugas</div>
+			<form className="form" onSubmit={handleSubmit(submitForm)}>
+				<div className="flex mx-4 py-2 flex-col gap-2">
+					<div className="flex justify-center gap-2 sm:gap-5 p-2 mx-2 rounded-full bg-stone-500/50 items-center flex-1">
+						<Radio
+							{...register("jenis_tugas")}
+							id="Tugas Pokok"
+							text="Tugas Pokok"
+							value="Tugas Pokok"
+							color="green"
+							labelFont="font-semibold sm:tracking-widest"
+						/>
+						<Radio
+							{...register("jenis_tugas")}
+							id="Tugas Tambahan"
+							text="Tugas Tambahan"
+							value="Tugas Tambahan"
+							labelFont="font-semibold upercase sm:tracking-widest"
+						/>
+					</div>
+					{optionsJabatan && (
+						<Controller
+							render={({ field: { onChange, value } }) => (
+								<ComboBox
+									value={value}
+									options={optionsJabatan}
+									placeholder="Jabatan"
+									error={errors?.jabatan_id?.message}
+									onChange={e => onChange(e)}
+									disabled={!withJabatan}
+								/>
+							)}
+							name="jabatan_id"
+							control={control}
+						/>
+					)}
+					<Controller
+						render={({ field }) => (
+							<Textarea
+								{...field}
+								placeholder="Uraian Tugas"
+								error={errors?.uraian_tugas?.message}
 							/>
 						)}
-						<Controller
-							render={({ field }) => (
-								<Textarea
-									{...field}
-									placeholder="Uraian Tugas"
-									error={errors?.uraian_tugas?.message}
-								/>
-							)}
-							name="uraian_tugas"
-							control={control}
-						/>
+						name="uraian_tugas"
+						control={control}
+					/>
 
-						<Controller
-							render={({ field }) => (
-								<Input
-									{...field}
-									type="number"
-									placeholder="Angka kredit"
-									error={errors?.angka_kredit?.message}
-								/>
-							)}
-							name="angka_kredit"
-							control={control}
-						/>
-						<Controller
-							render={({ field }) => (
-								<Input
-									{...field}
-									placeholder="Indikator kinerja"
-									error={errors?.indikator?.message}
-								/>
-							)}
-							name="indikator"
-							control={control}
-						/>
-					</div>
+					<Controller
+						render={({ field }) => (
+							<Input
+								{...field}
+								type="number"
+								placeholder="Angka kredit"
+								error={errors?.angka_kredit?.message}
+							/>
+						)}
+						name="angka_kredit"
+						control={control}
+					/>
+					<Controller
+						render={({ field }) => (
+							<Input
+								{...field}
+								placeholder="Indikator kinerja"
+								error={errors?.indikator?.message}
+							/>
+						)}
+						name="indikator"
+						control={control}
+					/>
+				</div>
 
-					<div className="flex items-center gap-4 justify-end mt-4">
-						<Button
-							type="button"
-							loading={loading}
-							onClick={resetForm}
-							color="red">
-							Tutup
-						</Button>
-						<Button disable={loading} loading={loading} type="submit">
-							{dataEdit?.id ? "Simpan Perubahan" : "Simpan"}
-						</Button>
-						{/* <Button
-							disable={loading}
-							loading={loading}
-							type="submit">
-							{pegawai?.id ? "Simpan Perubahan" : "Simpan"}
-						</Button> */}
-						{/* <div>{JSON.stringify(data)}</div> */}
-					</div>
+				<div className="flex form-footer">
+					<Button
+						type="button"
+						loading={loading}
+						onClick={resetForm}
+						color="red">
+						Tutup
+					</Button>
+					<Button disable={loading} loading={loading} type="submit">
+						{dataEdit?.id ? "Simpan Perubahan" : "Simpan"}
+					</Button>
 				</div>
 			</form>
 		</div>

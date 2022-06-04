@@ -7,27 +7,22 @@ import * as yup from "yup";
 import { Switch } from "@headlessui/react";
 import DatePicker from "react-datepicker";
 import { addAktivitas, updateAktivitas } from "@hooks/api/Kegiatan/aktivitas";
-import { makeOptionsUraianTugas } from "@hooks/api/Kepegawaian/uraianTugas";
-import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
-import { makeOptionsPorgramKegiatan } from "@hooks/api/Kegiatan/programKegiatan";
+import { makeOptionsUnit } from "@hooks/api/Kepegawaian/unit";
+import {
+	makeOptionsSubKegiatan,
+	makeOptionsPorgramKegiatan,
+} from "@hooks/api/Kegiatan/programKegiatan";
 function FormAktivitas({
 	data = {},
 	close = () => {},
-	pegawai = {},
-	returnSuccess = () => {},
+	user = {},
+	responseFromChild = () => {},
 } = {}) {
-	const { getOptionsUnit, optionsUnit } = makeOptionsUnits();
-	const {
-		optionsUraianTugas,
-		getOptionsUraianTugas,
-	} = makeOptionsUraianTugas();
+	const [optionsUnit, setOptionsUnit] = useState([]);
+	const [hasUraianTugas, setHasUraianTugas] = useState(false);
+	const [optionsUraianTugas, setOptionsUraianTugas] = useState([]);
+	const [optionsSubKegiatan, setOptionsSubKegiatan] = useState([]);
 
-	const [hasUraianTugas, sethasUraianTugas] = useState(true);
-	const [jabatanId, setJabatanId] = useState(pegawai?.jabatan_id);
-	const {
-		getOptionsSubKegiatan,
-		optionsSubKegiatan,
-	} = makeOptionsPorgramKegiatan();
 	const schema = yup
 		.object({
 			judul: yup.string().required("Judul aktivitas harus diisi"),
@@ -55,7 +50,7 @@ function FormAktivitas({
 			judul: data?.judul || "",
 			mulai: data?.mulai ? new Date(data?.mulai) : new Date(),
 			uraian: data?.uraian || "",
-			unit_id: pegawai?.unit_id || "",
+			unit_id: user?.unit_id || "",
 			uraian_tugas_id: "",
 		},
 		resolver: yupResolver(schema),
@@ -65,26 +60,41 @@ function FormAktivitas({
 		control,
 		name: "unit_id",
 	});
-	useEffect(async () => {
-		if (optionsUnit.length == 0) {
-			await getOptionsUnit();
-		}
-		if (jabatanId && hasUraianTugas && optionsUraianTugas.length == 0) {
-			await getOptionsUraianTugas(jabatanId);
-			console.log(optionsUraianTugas);
-		}
-	}, [jabatanId, hasUraianTugas]);
-
-	// useEffect(() => {
-	// 	if (data && data?.uraian_tugas_id == null) {
-	// 		sethasUraianTugas(false);
-	// 	}
-	// }, [data]);
+	useEffect(() => {
+		makeOptionsSubKegiatan();
+		return () => {
+			setOptionsSubKegiatan([]);
+		};
+	}, []);
+	useEffect(() => {
+		makeOptionsUnit().then(d => setOptionsUnit(d));
+		return () => {
+			setOptionsUnit([]);
+		};
+	}, []);
 	useEffect(() => {
 		if (unitId) {
-			getOptionsSubKegiatan({ unitId });
+			makeOptionsPorgramKegiatan(
+				`filter[type]=subKegiatan&filter[unit_id]=${unitId}`,
+			).then(d => setOptionsSubKegiatan(d));
+			// makeOptionsSubKegiatan({ unitId }).then(d => setOptionsSubKegiatan(d));
 		}
 	}, [unitId]);
+	useEffect(() => {
+		if (data && data?.uraian_tugas_id) {
+			setHasUraianTugas(true);
+		}
+	}, [data]);
+	useEffect(() => {
+		if (user.jabatan?.uraianTugas) {
+			const data = user.jabatan.uraianTugas;
+			let temp = [];
+			data.map(d => {
+				temp[d.id] = { key: d.id, value: d.id, label: d.uraian_tugas };
+			});
+			setOptionsUraianTugas(temp);
+		}
+	}, [user]);
 
 	const resetForm = () => {
 		reset({}, { keepDefaultValues: true });
@@ -97,14 +107,14 @@ function FormAktivitas({
 		if (data && data?.id) {
 			updateAktivitas(form, data.id).then(res => {
 				if (res.success) {
-					returnSuccess(res);
+					responseFromChild(res);
 					return resetForm();
 				}
 			});
 		} else {
 			addAktivitas(form).then(res => {
 				if (res.success) {
-					returnSuccess(res);
+					responseFromChild(res);
 					return resetForm();
 				}
 			});
@@ -166,13 +176,13 @@ function FormAktivitas({
 						name="program_kegiatan_id"
 						control={control}
 					/>
-					{jabatanId && (
+					{user?.jabatan?.uraianTugas && (
 						<label className="flex flex-wrap justify-between items-start">
 							Aktivitas sesuai uraian tugas?
 							<Switch
 								checked={hasUraianTugas}
 								onChange={() => {
-									sethasUraianTugas(!hasUraianTugas);
+									setHasUraianTugas(!hasUraianTugas);
 								}}
 								className={`${
 									hasUraianTugas ? "bg-blue-300" : "bg-red-300"
@@ -194,7 +204,7 @@ function FormAktivitas({
 						</label>
 					)}
 
-					{hasUraianTugas && optionsUraianTugas.length > 0 && jabatanId && (
+					{hasUraianTugas && (
 						<Controller
 							render={({ field: { onChange, value } }) => (
 								<ComboBox

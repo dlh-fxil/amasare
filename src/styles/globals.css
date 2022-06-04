@@ -7,24 +7,35 @@
 @import 'tippy.js/animations/shift-away.css'; */
 
 @layer utilities {
+	.scrollbar-thin {
+		@apply scrollbar:!w-1.5 scrollbar:!max-h-1.5 scrollbar:!bg-transparent scrollbar-track:!bg-stone-500/20 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-500/80 scrollbar-track:!rounded;
+	}
 	.topbar {
 		@apply bg-stone-900;
 	}
 	.menu-items::after {
 		content: "";
 
-		@apply absolute pointer-events-none bg-transparent -top-10 right-0 h-10 w-2.5 rounded-br-full shadow-slate-800 shadow-[0px_10px_0px_0px];
+		@apply absolute pointer-events-none bg-transparent -top-10 right-0 h-10 w-2.5 rounded-br-full shadow-slate-200 shadow-[0px_10px_0px_0px];
 	}
 	.menu-items::before {
-		@apply absolute bg-transparent pointer-events-none -bottom-10 right-0 h-10 w-2.5 rounded-tr-full shadow-slate-800 shadow-[0px_-10px_0px_0px];
+		@apply absolute bg-transparent pointer-events-none -bottom-10 right-0 h-10 w-2.5 rounded-tr-full shadow-slate-200 shadow-[0px_-10px_0px_0px];
 		content: "";
 	}
 	.content {
-		@apply bg-slate-800 text-slate-100;
+		@apply bg-stone-500 flex text-slate-900 sm:px-6 lg:px-8 w-full max-w-screen-2xl mx-auto;
 	}
-	.content {
-		@apply bg-slate-800 text-slate-100;
+	.card-content {
+		@apply bg-slate-200 text-slate-900 px-2 sm:px-3 lg:px-4 py-4 w-full sm:rounded-lg mx-auto;
 	}
+
+	.topbar {
+		@apply bg-stone-800 text-slate-100;
+	}
+	.body {
+		@apply bg-stone-500;
+	}
+
 	.card {
 		@apply bg-slate-100 text-slate-900;
 	}

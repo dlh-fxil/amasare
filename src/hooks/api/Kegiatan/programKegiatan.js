@@ -1,7 +1,8 @@
 import axios from "@/lib/axios";
 import customToast from "@atoms/customToast";
-import { useState } from "react";
+import { responseErrors } from "../responseErrors";
 const { toastLoading } = customToast();
+
 export const addProgramKegiatan = async formData => {
 	toastLoading({ message: "Data sedang ditambahkan", type: "loading" });
 	try {
@@ -36,6 +37,7 @@ export const addProgramKegiatan = async formData => {
 		}
 	}
 };
+
 export const updateProgramKegiatan = async (formData, id) => {
 	toastLoading({ message: "Perubahan sedang disimpan", type: "loading" });
 	try {
@@ -70,6 +72,7 @@ export const updateProgramKegiatan = async (formData, id) => {
 		}
 	}
 };
+
 export const deleteProgramKegiatan = async id => {
 	toastLoading({ message: "Data sedang dihapus", type: "loading" });
 	try {
@@ -101,123 +104,121 @@ export const deleteProgramKegiatan = async id => {
 		return { errors: error, message: message };
 	}
 };
-export const getProgramKegiatan = async ({ query } = {}) => {
-	try {
-		const res = await axios.get(`/api/programKegiatan${query}`);
 
+export const getProgramKegiatan = async ({ query = "", url = "" } = {}) => {
+	try {
+		let newUrl = "/api/programKegiatan";
+		if (query) {
+			newUrl = `/api/programKegiatan${query}`;
+		}
+		if (url) {
+			newUrl = url;
+		}
+		const res = await axios.get(newUrl);
 		if (res?.data?.success) {
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
-		if (error?.response?.status == 422) {
-			return error.response.data;
-		} else {
-			return { errors: error, message: error };
-		}
+		return responseErrors(error);
 	}
 };
 
-export const makeOptionsPorgramKegiatan = () => {
-	const [optionsProgram, setProgramForOptions] = useState([]);
-	const getOptionsProgram = async () => {
-		try {
-			const { data, success } = await getProgramKegiatan({
-				query: "?perPage=100&filter[type]=program",
-			});
-
-			if (success) {
-				let temp = [];
-				data.map(i => {
-					temp.push({
-						key: i.id,
-						value: i.id,
-						label: `${i.nomenklatur}`,
-						object: i,
-					});
-				});
-				return setProgramForOptions(temp);
-			}
-		} catch (error) {
-			if (error?.response?.status == 422) {
-				return console.log(Object.values(error.response.data.errors).flat());
-			} else {
-				console.error("message: ", error.response?.data?.message);
-				return console.error("Error: ", error.message);
-			}
+export const makeOptionsPorgramKegiatan = async param => {
+	try {
+		let query = `?perPage=100`;
+		if (param) {
+			query = query + "&" + param;
 		}
-	};
-	const [optionsKegiatanProgram, setKegiatanProgramForOptions] = useState([]);
+		const { data, success } = await getProgramKegiatan({ query });
 
-	const getOptionsKegiatanProgram = async kodeProgram => {
-		try {
-			const { data, success } = await getProgramKegiatan({
-				query: `?perPage=100&filter[id_program]=${kodeProgram}&filter[type]=kegiatan`,
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp[i.id] = {
+					key: i.id,
+					value: i.id,
+					label: `${i.nomenklatur} (${i.type})`,
+					object: i,
+				};
 			});
-
-			if (success) {
-				let temp = [];
-				data.map(i => {
-					temp.push({
-						key: i.id,
-						value: i.id,
-						label: `${i.nomenklatur}`,
-						object: i,
-					});
-				});
-				return setKegiatanProgramForOptions(temp);
-			}
-		} catch (error) {
-			if (error?.response?.status == 422) {
-				return console.log(Object.values(error.response.data.errors).flat());
-			} else {
-				console.error("message: ", error.response?.data?.message);
-				return console.error("Error: ", error.message);
-			}
+			return temp;
 		}
-	};
-	const [optionsSubKegiatan, setOptionsSubKegiatan] = useState([]);
+	} catch (error) {
+		return [];
+	}
+};
+export const makeOptionsProgram = async () => {
+	try {
+		let query = `?perPage=100&filter[type]=program`;
 
-	const getOptionsSubKegiatan = async ({
-		idProgram = null,
-		idKegiatan = null,
-		unitId = null,
-	} = {}) => {
-		try {
-			const { data, success } = await getProgramKegiatan({
-				query: `?perPage=100&filter[type]=subKegiatan&filter[unit_id]=${unitId}`,
+		const { data, success } = await getProgramKegiatan({ query });
+
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp[i.id] = {
+					key: i.id,
+					value: i.id,
+					label: `${i.nomenklatur} (${i.type})`,
+					object: i,
+				};
 			});
-
-			if (success) {
-				let temp = [];
-				data.map(i => {
-					temp.push({
-						key: i.id,
-						value: i.id,
-						label: `${i.nomenklatur}`,
-						object: i,
-					});
-				});
-				return setOptionsSubKegiatan(temp);
-			}
-		} catch (error) {
-			if (error?.response?.status == 422) {
-				return console.log(Object.values(error.response.data.errors).flat());
-			} else {
-				console.error("message: ", error.response?.data?.message);
-				return console.error("Error: ", error.message);
-			}
+			return temp;
 		}
-	};
+	} catch (error) {
+		return [];
+	}
+};
+export const makeOptionsKegiatan = async (kodeProgram = null) => {
+	try {
+		let query = `?perPage=100&filter[type]=kegiatan`;
+		if (kodeProgram) {
+			query = query + `&filter[id_program]=${kodeProgram}`;
+		}
+		const { data, success } = await getProgramKegiatan({ query });
 
-	return {
-		getOptionsProgram,
-		optionsProgram,
-		getOptionsKegiatanProgram,
-		optionsKegiatanProgram,
-		optionsSubKegiatan,
-		getOptionsSubKegiatan,
-	};
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp[i.id] = {
+					key: i.id,
+					value: i.id,
+					label: `${i.nomenklatur} (${i.type})`,
+					object: i,
+				};
+			});
+			return temp;
+		}
+	} catch (error) {
+		return [];
+	}
+};
+
+export const makeOptionsSubKegiatan = async ({
+	idProgram = null,
+	idKegiatan = null,
+	unitId = null,
+} = {}) => {
+	try {
+		let query = `?perPage=100&filter[type]=subKegiatan`;
+		if (unitId) {
+			query = query + `&filter[unit_id]=${unitId}`;
+		}
+		const { data, success } = await getProgramKegiatan({ query });
+
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp[i.id] = {
+					key: i.id,
+					value: i.id,
+					label: `${i.nomenklatur} (${i.type})`,
+					object: i,
+				};
+			});
+			return temp;
+		}
+	} catch (error) {
+		return [];
+	}
 };

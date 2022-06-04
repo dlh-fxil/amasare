@@ -21,9 +21,6 @@ const App = (
 	ref,
 ) => {
 	const [key, setKey] = useState(-2);
-	console.log(key);
-	console.log(value);
-	console.log(options);
 
 	useEffect(() => {
 		if (options.length) {

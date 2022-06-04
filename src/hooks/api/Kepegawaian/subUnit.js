@@ -98,38 +98,25 @@ export const getSubUnit = async ({ query = null, url = null }) => {
 	}
 };
 
-export const makeOptionsSubUnit = () => {
-	const [optionsSubUnit, setOptionsSubUnit] = useState([]);
-
-	const getOptionsSubUnit = async unit_id => {
-		// if (unit_id) {
-		try {
-			const { data, success } = await getSubUnit({
-				query: `?perPage=999`,
-			});
-			if (success) {
-				let temp = [];
-				data.map(i => {
-					temp.push({
-						key: i.id,
-						value: i.id,
-						label: `${i.nama} (${i.jenis})`,
-					});
+export const makeOptionsSubUnit = async unit_id => {
+	// if (unit_id) {
+	try {
+		const { data, success } = await getSubUnit({
+			query: `?perPage=999`,
+		});
+		if (success) {
+			let temp = [];
+			data.map(i => {
+				temp.push({
+					key: i.id,
+					value: i.id,
+					label: `${i.nama} (${i.jenis})`,
 				});
-				return setOptionsSubUnit(temp);
-			}
-		} catch (error) {
-			const message =
-				error?.response?.data?.message ||
-				error.response?.data?.message ||
-				error.message;
-
-			return { errors: error, message: message };
+			});
+			return temp;
 		}
-		// }
-	};
-	return {
-		optionsSubUnit,
-		getOptionsSubUnit,
-	};
+	} catch (error) {
+		return [];
+	}
+	// }
 };

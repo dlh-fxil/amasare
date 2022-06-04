@@ -1,11 +1,15 @@
 import PhotoProfile from "./PhotoProfile";
-function HeaderProfile({ user = {}, reloadAktivitas = () => {} } = {}) {
+function HeaderProfile({
+	user = {},
+	reloadAktivitas = () => {},
+	reloadProfile = () => {},
+} = {}) {
 	return (
-		<div className="w-full  bg-cover bg-[url(https://source.unsplash.com/random/1920x160/?wallpaper,landscape)]">
-			<div className="flex md:flex-row flex-col-reverse">
+		<div className=" bg-cover bg-[url(https://source.unsplash.com/random/1920x160/?wallpaper,landscape)]">
+			<div className="flex md:flex-row  flex-col-reverse">
 				<div className="flex-1  md:bg-gradient-to-r bg-slate-50/50 md:bg-transparent from-white ">
 					<div className="flex h-full flex-col">
-						<div className="grow md:flex items-center justify-between pt-2 px-4 md:px-8">
+						<div className="grow md:flex items-center justify-between px-2 sm:px-3 lg:px-4 py-4">
 							<div>
 								<div className="text-center md:text-left font-bold text-slate-800 font text-lg md:text-2xl">
 									{user?.name}
@@ -29,12 +33,16 @@ function HeaderProfile({ user = {}, reloadAktivitas = () => {} } = {}) {
 						</div>
 						<div className="bg-green-500/50 md:bg-transparent md:rounded-l-full h-fit flex-none bg-opacity-10 flex justify-end">
 							<div className="flex px-4 flex-wrap  w-full justify-end items-center">
-								<ul className="flex md:mx-4  py-1.5 gap-y-1 gap-x-4 items-center flex-1 flex-wrap justify-start">
+								<ul className="flex py-1.5 gap-y-1 gap-x-4 items-center flex-1 flex-wrap justify-start">
 									{user.email && cardEmail()}
 									{user.no_wa && cardNoWa()}
 									{user.no_hp && cardNoHp()}
 								</ul>
-								<ButtonProfile reloadAktivitas={reloadAktivitas} user={user} />
+								<ButtonProfile
+									reloadAktivitas={reloadAktivitas}
+									user={user}
+									reloadProfile={reloadProfile}
+								/>
 							</div>
 						</div>
 					</div>
@@ -114,7 +122,11 @@ import { useState, useEffect } from "react";
 import ModalEditProfile from "./ModalEditProfile";
 import ModalAktivitas from "./ModalAktivitas";
 
-const ButtonProfile = ({ user = {}, reloadAktivitas = () => {} }) => {
+const ButtonProfile = ({
+	user = {},
+	reloadAktivitas = () => {},
+	reloadProfile = () => {},
+}) => {
 	const [openModalEditProfile, setOpenModalEditProfile] = useState(false);
 	const [openModalKegiatan, setOpenModalKegiatan] = useState(false);
 	const closeModalProfile = () => {
@@ -135,13 +147,14 @@ const ButtonProfile = ({ user = {}, reloadAktivitas = () => {} }) => {
 			<ModalEditProfile
 				open={openModalEditProfile}
 				close={closeModalProfile}
-				userId={user.id}
+				user={user}
+				returnSuccess={reloadProfile}
 			/>
 			<ModalAktivitas
 				returnSuccess={reloadAktivitas}
 				open={openModalKegiatan}
 				close={closeModalKegiatan}
-				pegawai={user}
+				user={user}
 			/>
 			<ul className="flex py-1.5 items-center gap-2 justify-end">
 				<li className="font-semibold">

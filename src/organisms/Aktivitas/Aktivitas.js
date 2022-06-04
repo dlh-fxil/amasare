@@ -1,87 +1,134 @@
-import { useState, useEffect } from "react";
+import { useState, forwardRef } from "react";
 import Moment from "react-moment";
 import { PhotographIcon } from "@heroicons/react/solid";
-import { useAuth } from "@hooks/api/auth";
-const Aktivitas = ({
-	aktivitas = {},
-	dataEdit = () => {},
-	setDataFollow = () => {},
-	unfollow = () => {},
-} = {}) => {
+import DialogModal from "@atoms/Modal";
+import FormFollowAktivitas from "./FormFollowAktivitas";
+import {
+	cancelEndAktivitas,
+	deleteAktivitas,
+	endAktivitas,
+} from "@hooks/api/Kegiatan/aktivitas";
+import DialogConfirmation from "@molecules/DialogConfirmation";
+const Aktivitas = (
+	{ aktivitas = {}, responseFromChild = () => {} } = {},
+	ref,
+) => {
 	const [showDetail, setShowDetail] = useState(false);
-	const { user } = useAuth();
+	const [modalFollow, setModalFollow] = useState(false);
+	const [confirmDelete, setConfirmDelete] = useState(false);
+	const [modalEnd, setModalEnd] = useState(false);
+	const [modalCancelEnd, setModalCancelEnd] = useState(false);
 	const chekJam = str => {
 		const val = new Date(str);
 		const now = new Date();
 		return (now - val) / (1000 * 3600) < 12;
 	};
 
-	const firstImage = aktivitas?.images ?? "https://source.unsplash.com/random/300x400/?environment";
+	const openModalFollow = () => {
+		setModalFollow(true);
+	};
 
-	if (aktivitas) {
-		return (
+	const openModalEnd = () => {
+		setModalEnd(true);
+	};
+
+	const openModalCancelEnd = () => {
+		setModalCancelEnd(true);
+	};
+	const openModalConfirmDelete = () => {
+		setConfirmDelete(true);
+	};
+	const closeModal = (res = { success: true }) => {
+		if (res?.success) {
+			setModalFollow(false);
+			setModalEnd(false);
+			setConfirmDelete(false);
+			setModalCancelEnd(false);
+			return responseFromChild(res);
+		}
+		console.log(res);
+	};
+	const firstImage =
+		aktivitas?.images ??
+		"https://source.unsplash.com/random/300x400/?environment";
+
+	const end = () => {
+		endAktivitas(aktivitas.id).then(res => {
+			return closeModal(res);
+		});
+	};
+	const cancelEnd = () => {
+		cancelEndAktivitas(aktivitas.id).then(res => {
+			return closeModal(res);
+		});
+	};
+
+	const unfollow = () => {
+		deleteAktivitas(aktivitas.id).then(res => {
+			return closeModal(res);
+		});
+	};
+	return (
+		<div ref={ref}>
 			<div className="shadow card rounded-lg">
 				<div className="">
 					<div className={` w-full`}>
 						<div className="flex items-center w-full justify-between px-4 py-2">
-							<div className="flex space-x-2 w-full items-center">
-								<div className="flex space-x-2">
-									{aktivitas?.users?.map(
-										user =>
-											user.id !== aktivitas.created_by && (
-												<div key={user.id} className="flex gap-2">
-													<img
-														src={
-															user?.profile_images?.thumb ??
-															`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
-														}
-														alt="Profile picture"
-														data-tip={user.nama}
-														className="w-10 h-auto object-cover rounded-full"
-													/>
-												</div>
-											),
-									)}
-								</div>
-								<div className="relative">
+							<div className="flex space-x-2 w-full items-center ">
+								<div className="flex space-x-2 w-fit  overflow-y-clip flex-nowrap overflow-x-auto"></div>
+								<div className="relative min-w-fit min-h-fit">
 									<img
 										src={
 											aktivitas?.createdBy?.profile_images?.thumb ??
 											`https://ui-avatars.com/api/?size=40&name=${aktivitas?.createdBy?.name}&color=fff&background=0D8ABC`
 										}
 										alt="Profile picture"
-										className="w-10 h-auto object-cover rounded-full"
+										className="w-10 h-10 object-cover overflow-hidden rounded-full"
 									/>
 									<span className="bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2"></span>
 								</div>
-								<div className="flex items-center justify-between w-full">
-									<div className="h-fit grow">
-										<div className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none text-sm md:text-base md:font-semibold font-medium">
+								<div className="flex items-center justify-between  w-full">
+									<div className="h-fit min-w-fit pr-2">
+										<div className="line-clamp-2 active:line-clamp-none hover:line-clamp-none text-sm md:text-base md:font-semibold font-medium">
 											{aktivitas?.createdBy?.name}
 										</div>
-										<div className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none -mb-2.5 md:mb-0 text-sm -mt-0.5 md:mt-0 tracking-normal font-thin text-slate-700">
-											{aktivitas?.createdBy?.jabatan?.nama}
+										<div className="line-clamp-2 active:line-clamp-none hover:line-clamp-none -mb-2.5 md:mb-0 text-sm -mt-0.5 md:mt-0 tracking-normal font-thin text-slate-700">
+											{chekJam(aktivitas.mulai) ? (
+												<Moment
+													locale="id"
+													className="text-green-700 flex-shrink-0 line-clamp-2 active:line-clamp-none hover:line-clamp-none w-fit text-xs md:text-sm "
+													fromNow>
+													{aktivitas.mulai}
+												</Moment>
+											) : (
+												<Moment
+													locale="id"
+													className="line-clamp-2 active:line-clamp-none hover:line-clamp-none text-slate-800 text-xs md:text-sm"
+													format="dddd D MMM YYYY h:m:s">
+													{aktivitas.mulai}
+												</Moment>
+											)}
 										</div>
 									</div>
-									{chekJam(aktivitas.mulai) ? (
-										<Moment
-											locale="id"
-											className="text-green-700 flex-shrink-0 line-clamp-1 hover:line-clamp-none touch:line-clamp-none w-fit text-xs md:text-sm "
-											fromNow>
-											{aktivitas.mulai}
-										</Moment>
-									) : (
-										<Moment
-											locale="id"
-											className="line-clamp-1 hover:line-clamp-none touch:line-clamp-none text-slate-800 text-xs md:text-sm"
-											format="dddd D MMM YYYY h:m:s">
-											{aktivitas.mulai}
-										</Moment>
-									)}
+									<div className="hidden sm:flex overscroll-x-contain overflow-x-auto justify-end scrollbar-thin supports-scrollbars:pb-1 space-x-1 ">
+										{aktivitas?.users?.map(
+											user =>
+												user.id !== aktivitas.created_by && (
+													<div key={user.id} className="min-w-fit min-h-fit">
+														<img
+															src={
+																user?.profile_images?.thumb ??
+																`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
+															}
+															alt="Profile picture"
+															data-tip={user.nama}
+															className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
+														/>
+													</div>
+												),
+										)}
+									</div>
 								</div>
-							</div>
-							<div className="w-8 h-8 grid place-items-center text-xl text-slate-500 hover:bg-slate-200 rounded-full cursor-pointer">
-								<i className="bx bx-dots-horizontal-rounded"></i>
 							</div>
 						</div>
 						<div className="text-justify flex items-center px-4 ">
@@ -96,18 +143,36 @@ const Aktivitas = ({
 										</button>
 									</span>
 								</p>
-								<p className=" font-medium whitespace-nowrap sm:text-md text-left w-full pb-2">
+								<p className="font-medium whitespace-nowrap sm:text-md text-left w-full pb-2">
 									{aktivitas.programKegiatan?.unit?.nama == "Sektretariat"
 										? aktivitas.programKegiatan?.unit?.nama
 										: "Bidang " + aktivitas.programKegiatan?.unit?.nama}
 								</p>
 
 								<p
-									className={`${
-										showDetail ? "line-clamp-none" : "line-clamp-3"
-									} text-sm sm:text-base hover:line-clamp-none`}>
+									className={`line-clamp-2 text-sm sm:text-base active:line-clamp-none hover:line-clamp-none`}>
 									{aktivitas.uraian}{" "}
 								</p>
+								{!showDetail && (
+									<div className="flex mt-1 sm:hidden overscroll-x-contain overflow-x-auto scrollbar-thin supports-scrollbars:pb-1 space-x-1 ">
+										{aktivitas?.users?.map(
+											user =>
+												user.id !== aktivitas.created_by && (
+													<div key={user.id} className="min-w-fit min-h-fit">
+														<img
+															src={
+																user?.profile_images?.thumb ??
+																`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
+															}
+															alt="Profile picture"
+															data-tip={user.nama}
+															className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
+														/>
+													</div>
+												),
+										)}
+									</div>
+								)}
 								{showDetail && (
 									<div className="w-full sm:flex">
 										<div className="md:w-1/6 w-full flex justify-center items-center h-64 md:h-auto md:pr-2 md:pt-2 overflow-hidden rounded-lg">
@@ -117,41 +182,61 @@ const Aktivitas = ({
 												alt={aktivitas.judul}
 											/>
 										</div>
-										<table className="mt-3">
-											<tbody>
-												<tr>
-													<td className="font-medium whitespace-nowrap">Bidang</td>
-													<td className="w-3 px-1">:</td>
-													<td colSpan={2} className="font-medium">
-														{aktivitas.programKegiatan?.unit?.nama}
-													</td>
-												</tr>
-												<tr>
-													<td className="font-medium whitespace-nowrap">Program</td>
-													<td className="w-3 px-1">:</td>
-													<td className="px-1 font-bold whitespace-nowrap">
-														{aktivitas.programKegiatan?.program?.kode}
-													</td>
-													<td>{aktivitas.programKegiatan?.program?.nomenklatur}</td>
-												</tr>
-												<tr>
-													<td className="font-medium whitespace-nowrap">Kegiatan</td>
-													<td className="w-3 px-1">:</td>
-													<td className="px-1 font-bold whitespace-nowrap">
-														{aktivitas.programKegiatan?.kegiatan?.kode}
-													</td>
-													<td>{aktivitas.programKegiatan?.kegiatan?.nomenklatur}</td>
-												</tr>
-												<tr>
-													<td className="font-medium whitespace-nowrap">Sub Kegiatan</td>
-													<td className="w-3 px-1">:</td>
-													<td className="px-1 font-bold whitespace-nowrap">
-														{aktivitas.programKegiatan?.kode}
-													</td>
-													<td>{aktivitas.programKegiatan?.nomenklatur}</td>
-												</tr>
-											</tbody>
-										</table>
+										<div>
+											<label className="font-semibold">
+												Pelaksana:
+												<p className="font-normal">
+													{aktivitas.programKegiatan?.unit?.nama ==
+													"Sektretariat"
+														? aktivitas.programKegiatan?.unit?.nama
+														: "Bidang " + aktivitas.programKegiatan?.unit?.nama}
+												</p>
+											</label>
+											<label className="font-semibold">
+												Sub Kegiatan: {aktivitas.programKegiatan?.kode}
+												<p className="font-normal">
+													{aktivitas.programKegiatan?.nomenklatur}
+												</p>
+											</label>
+											{aktivitas.programKegiatan?.kegiatan && (
+												<label className="font-semibold">
+													Kegiatan:
+													<p className="font-normal">
+														{aktivitas.programKegiatan?.kegiatan?.nomenklatur}
+													</p>
+												</label>
+											)}
+											{aktivitas.programKegiatan?.program && (
+												<label className="font-semibold">
+													Program:
+													<p className="font-normal">
+														{aktivitas.programKegiatan?.program?.nomenklatur}
+													</p>
+												</label>
+											)}
+
+											<label className="font-semibold">
+												Nama Peserta Pelaksana Kegiatan:
+												<ul>
+													{aktivitas?.users?.map(user => (
+														<li
+															key={user.id}
+															className="list-decimal font-normal list-inside">
+															{/* <img
+																		src={
+																			user?.profile_images?.thumb ??
+																			`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
+																		}
+																		alt="Profile picture"
+																		data-tip={user.nama}
+																		className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
+																	/> */}
+															{user.nama}
+														</li>
+													))}
+												</ul>
+											</label>
+										</div>
 									</div>
 								)}
 							</div>
@@ -161,37 +246,84 @@ const Aktivitas = ({
 				<div className="py-2 px-4">
 					<div className="border border-gray-200 border-l-0 border-r-0 py-1">
 						<div className="flex justify-around space-x-2">
-							<div className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-								<i className="bx bx-comment"></i>
-								<span className="text-sm font-semibold">Selesaikan</span>
-							</div>
-							{aktivitas.can.follow && setDataFollow && (
+							{aktivitas.can.end ? (
 								<button
-									onClick={() => setDataFollow(aktivitas)}
+									onClick={openModalEnd}
+									type="button"
+									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
+									<span className="text-sm font-semibold">Selesaikan</span>
+								</button>
+							) : (
+								<button
+									onClick={openModalCancelEnd}
+									type="button"
+									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
+									<span className="text-sm font-semibold">Masih berjalan</span>
+								</button>
+							)}
+							{aktivitas.can.follow ? (
+								<button
+									onClick={openModalFollow}
 									type="button"
 									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
 									<span className="text-sm font-semibold">Ikuti</span>
 								</button>
-							)}
-							{aktivitas.can.unfollow && unfollow && (
+							) : (
 								<button
-									onClick={() => unfollow(aktivitas.id)}
+									onClick={openModalConfirmDelete}
 									type="button"
 									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-									<span className="text-sm font-semibold">Hapus/Berhenti Mengikuti</span>
+									<span className="text-sm font-semibold">Hapus</span>
 								</button>
 							)}
-							<div className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-								<PhotographIcon className="-ml-4 w-5 h-5 hidden md:block text-lime-700" />
-								<span className="text-sm font-semibold truncate">Foto</span>
-							</div>
+							{!aktivitas.can.end && (
+								<button
+									type="button"
+									onClick={() => alert("fitur dalam proses pengerjaan")}
+									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
+									<PhotographIcon className="-ml-4 w-5 h-5 hidden md:block text-lime-700" />
+									<span className="text-sm font-semibold truncate">Foto</span>
+								</button>
+							)}
 						</div>
 					</div>
 				</div>
 			</div>
+			{ModalDialog()}
+		</div>
+	);
+
+	function ModalDialog() {
+		return (
+			<>
+				<DialogModal isOpen={modalFollow} closeModal={closeModal}>
+					<FormFollowAktivitas
+						aktivitas={aktivitas}
+						close={closeModal}
+						responseFromChild={responseFromChild}
+					/>
+				</DialogModal>
+
+				<DialogConfirmation
+					open={modalCancelEnd}
+					action={cancelEnd}
+					close={closeModal}>
+					Apakah anda yakin kegiatan ini masih berjalan?
+				</DialogConfirmation>
+
+				<DialogConfirmation open={modalEnd} action={end} close={closeModal}>
+					Apakah anda yakin ingin menyelesaikan kegiatan ini?
+				</DialogConfirmation>
+
+				<DialogConfirmation
+					open={confirmDelete}
+					action={unfollow}
+					close={closeModal}>
+					Apakah anda yakin ingin menghapus kegiatan ini?
+				</DialogConfirmation>
+			</>
 		);
 	}
-	return <></>;
 };
 
-export default Aktivitas;
+export default forwardRef(Aktivitas);

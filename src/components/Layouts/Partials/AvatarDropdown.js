@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Popover, Transition } from "@headlessui/react";
 import { useAuth } from "@/hooks/api/auth";
+import axios from "@/lib/axios";
 const AvatarDropdown = () => {
 	const { user, logout } = useAuth({ middleware: "auth" });
 	const [urlImage, setUrlImage] = useState("images/blank-profile.png");
@@ -21,10 +22,10 @@ const AvatarDropdown = () => {
 						className={`
                 ${open ? "" : "opacity-90"}
                 group inline-flex bg-transparent  focus:outline-none`}>
-						<div>
+						<div className="text-xs flex">
 							<img
 								src={urlImage}
-								className="shadow-md shadow-sky-500 max-h-full object-contain p-1 border-sky-200 rounded-full"
+								className="shadow-md shadow-sky-500 h-10 w-10 max-h-full overflow-clip object-contain p-1 border-sky-200 rounded-full"
 								alt="foto-profile"
 							/>
 						</div>

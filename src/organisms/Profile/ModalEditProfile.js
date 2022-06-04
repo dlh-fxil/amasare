@@ -5,26 +5,17 @@ import { useEffect, useState } from "react";
 const ModalEditProfile = ({
 	open = false,
 	close = () => {},
-	userId = 0,
+	user = {},
 	returnSuccess = () => {},
 }) => {
 	const [dataUser, setDataUser] = useState({});
-	useEffect(() => {
-		if (userId && !dataUser.id) {
-			showUser(userId).then(res => {
-				if (res.success) {
-					setDataUser(res.data);
-				}
-				// console.log(res.data);
-			});
-		}
-	}, [userId]);
+
 	return (
 		<DialogModal size="xl" isOpen={open} closeModal={close}>
 			<FormProfilePegawai
-				dataUser={dataUser}
-				cancel={close}
-				returnSuccess={() => {}}
+				dataUser={user}
+				close={close}
+				returnSuccess={returnSuccess}
 			/>
 		</DialogModal>
 	);

@@ -9,18 +9,14 @@ import {
 } from "react-table";
 import React, { useMemo, useState, useEffect } from "react";
 import ColumnFilter from "./ColumnFilter";
-const App = ({
-	columns = [],
-	data = [],
-	loading = false,
-	setTableOption = () => {},
-} = {}) => {
+const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 	const defaultColumn = useMemo(
 		() => ({
 			Filter: ColumnFilter,
 			minWidth: 30,
 			width: 150,
 			maxWidth: 600,
+			canRisize: true,
 		}),
 		[],
 	);
@@ -32,6 +28,7 @@ const App = ({
 		rows,
 		prepareRow,
 		visibleColumns,
+		setAllFilters,
 		state: {
 			pageIndex,
 			pageSize,
@@ -58,28 +55,32 @@ const App = ({
 		useFlexLayout,
 		useResizeColumns,
 	);
-
+	const resetTable = () => {
+		setAllFilters([]);
+		// clearSortBy();
+	};
 	useEffect(() => {
-		setTableOption({ globalFilter, filters, sortBy });
-		// console.log(filters);
-		// return () => {
-		// 	setTableOption({});
-		// };
+		setTableOption({
+			globalFilter,
+			filters,
+			sortBy,
+			resetTable,
+		});
 	}, [globalFilter, filters, sortBy]);
 
 	return (
-		<table
-			className="w-full overflow-x-auto rounded-lg mx-auto"
-			{...getTableProps()}>
+		<table className="w-full overflow-x-auto mx-auto" {...getTableProps()}>
 			<thead>
 				{headerGroups.map(headerGroup => (
-					<tr className="" {...headerGroup.getHeaderGroupProps()}>
+					<tr
+						className="group space-x-1"
+						{...headerGroup.getHeaderGroupProps()}>
 						{headerGroup.headers.map(column => (
 							<th
 								scope="col"
-								className="w-full rouded-t-lg  max-w-full"
+								className="w-full max-w-full mb-0.5"
 								{...column.getHeaderProps()}>
-								<div className="flex flex-col justify-center items-center h-full bg-slate-900/20 py-2 px-2">
+								<div className="flex flex-col rounded-lg justify-center items-center h-full bg-slate-500/20 py-2 px-2">
 									{/* <div className='' {...column.getHeaderProps(column.getSortByToggleProps())}> */}
 									<div className="w-full" {...column.getSortByToggleProps()}>
 										{column.render("Header")}
@@ -96,65 +97,34 @@ const App = ({
 										: null}
 								</div>
 
-								<div
-									{...column.getResizerProps()}
-									className={`resizer top-0 right-0 group-hover:inline-block hidden z-10 transform absolute w-0.5 h-full translate-x-1/2  ${
-										column.isResizing
-											? "isResizing bg-orange-300"
-											: "bg-green-500"
-									} `}
-								/>
+								{column.canRisize && (
+									<div
+										{...column.getResizerProps()}
+										className={`resizer top-[10%] -right-0.5  inline-block z-10 transform shadow-md absolute w-1 h-[80%] translate-x-1/2  ${
+											column.isResizing
+												? "isResizing bg-green-500"
+												: "bg-lime-500"
+										} `}
+									/>
+								)}
 							</th>
 						))}
 					</tr>
 				))}
 			</thead>
 
-			<tbody {...getTableBodyProps()}>
+			<tbody className="space-y-0.5" {...getTableBodyProps()}>
 				{rows.map(row => {
+					console.log(row);
 					prepareRow(row);
 					return (
-						<tr {...row.getRowProps()} className="even:bg-slate-600/20">
+						<tr className="space-x-1 group " {...row.getRowProps()}>
+							{/* <tr {...row.getRowProps()} className="even:bg-slate-600/20"> */}
 							{row.cells.map(cell => {
-								if (loading) {
-									return (
-										<td
-											key={cell.column.id}
-											className="overflow-clip px-3 text-center max-w-full w-full"
-											{...cell.getCellProps({
-												style: {
-													minWidth: cell.minWidth, // width: cell.width,
-												},
-											})}>
-											<div className="flex items-center gap-2">
-												<svg
-													className="animate-spin h-5 w-5 text-green-700"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24">
-													<circle
-														cx="12"
-														cy="12"
-														r="10"
-														stroke="currentColor"
-														strokeWidth="4"></circle>
-													<path
-														fill="currentColor"
-														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-												</svg>
-												<div className="animate-pulse inline-flex w-full text-center space-x-4">
-													<div className="h-6 bg-slate-800 blur to-stone-600 w-full text-sm text-stone-800 text-opacity-50 rounded">
-														{/* {cell.column.Header} */}
-													</div>
-												</div>
-											</div>
-										</td>
-									);
-								}
-
 								return (
 									<td
-										className="overflow-clip max-w-full flex  py-1 px-2"
+										data-tip={cell?.column?.Header}
+										className="overflow-clip text-sm group-even:bg-blue-500/10 leading-tight line-clamp-2 group-active:line-clamp-none group-hover:line-clamp-none shadow shadow-stone-500/50 rounded group-hover:shadow-blue-500 group-active:shadow-blue-500 max-w-full py-1 px-2"
 										{...cell.getCellProps({
 											style: {
 												minWidth: cell.minWidth, // width: cell.width,
@@ -171,4 +141,4 @@ const App = ({
 		</table>
 	);
 };
-export default App;
+export default Table;

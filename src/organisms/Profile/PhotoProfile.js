@@ -34,7 +34,7 @@ export default function PhotoProfile({ user }) {
 		</div>
 	);
 	return (
-		<div className="flex-none w-full md:w-fit m-auto py-4 px-8">
+		<div className="flex-none w-full md:w-fit m-auto px-2 sm:px-3 lg:px-4 py-4">
 			<ModalImgCropper
 				openModal={openAvatar}
 				closeModal={closeModal}

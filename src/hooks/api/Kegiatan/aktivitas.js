@@ -1,6 +1,9 @@
 import axios from "@/lib/axios";
 import customToast from "@atoms/customToast";
+import { responseErrorValidations, responseErrors } from "../responseErrors";
+
 const { toastLoading } = customToast();
+
 export const addAktivitas = async formData => {
 	toastLoading({ message: "Data sedang ditambahkan", type: "loading" });
 	try {
@@ -11,28 +14,28 @@ export const addAktivitas = async formData => {
 				type: "success",
 			});
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
 		if (error?.response?.status == 422) {
 			toastLoading({
 				messages: Object.values(error.response.data.errors).flat(),
 				type: "error",
 			});
-			return error.response.data;
+			return responseErrorValidations(error.response.data);
 		} else {
 			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
 			toastLoading({
 				message: "Data gagal ditambahkan " + message,
 				type: "error",
 			});
-			return { errors: error, message: message };
+			return responseErrors;
 		}
 	}
 };
+
 export const followingAktivitas = async (formData, id) => {
 	toastLoading({ message: "Sedang prosess", type: "loading" });
 	try {
@@ -43,28 +46,27 @@ export const followingAktivitas = async (formData, id) => {
 				type: "success",
 			});
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
 		if (error?.response?.status == 422) {
 			toastLoading({
 				messages: Object.values(error.response.data.errors).flat(),
 				type: "error",
 			});
-			return error.response.data;
-		} else {
-			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
-			toastLoading({
-				message: "Kegiatan gagal diikuti " + message,
-				type: "error",
-			});
-			return { errors: error, message: message };
+			return responseErrorValidations(error.response.data);
 		}
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		toastLoading({
+			message: "Kegiatan gagal diikuti " + message,
+			type: "error",
+		});
+		return responseErrors(error);
 	}
 };
+
 export const deleteAktivitas = async id => {
 	toastLoading({ message: "Sedang prosess", type: "loading" });
 	try {
@@ -75,28 +77,20 @@ export const deleteAktivitas = async id => {
 				type: "success",
 			});
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
-		if (error?.response?.status == 422) {
-			toastLoading({
-				messages: Object.values(error.response.data.errors).flat(),
-				type: "error",
-			});
-			return error.response.data;
-		} else {
-			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
-			toastLoading({
-				message: "Kegiatan gagal diikuti " + message,
-				type: "error",
-			});
-			return { errors: error, message: message };
-		}
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		toastLoading({
+			message: "Kegiatan gagal diikuti " + message,
+			type: "error",
+		});
+		return responseErrors(error);
 	}
 };
+
 export const updateAktivitas = async (formData, id) => {
 	toastLoading({ message: "Perubahan sedang disimpan", type: "loading" });
 	try {
@@ -107,28 +101,28 @@ export const updateAktivitas = async (formData, id) => {
 				type: "success",
 			});
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
 		if (error?.response?.status == 422) {
 			toastLoading({
 				messages: Object.values(error.response.data.errors).flat(),
 				type: "error",
 			});
-			return error.response.data;
+			return responseErrorValidations(error.response.data);
 		} else {
 			const message =
-				error?.response?.data?.message || error.response?.data?.message || error.message;
+				error?.response?.data?.message ||
+				error.response?.data?.message ||
+				error.message;
 			toastLoading({
 				message: "Data gagal diubah " + message,
 				type: "error",
 			});
-			return { errors: error, message: message };
+			return responseErrors(error);
 		}
 	}
 };
+
 export const getAktivitas = async ({ query = null, url = null }) => {
 	try {
 		let newUrl = "/api/kegiatan";
@@ -142,15 +136,56 @@ export const getAktivitas = async ({ query = null, url = null }) => {
 
 		if (res?.data?.success) {
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
-		if (error?.response?.status == 422) {
-			return error.response.data;
-		} else {
-			return { errors: error, message: error };
+		responseErrors(error);
+	}
+};
+
+export const endAktivitas = async id => {
+	toastLoading({ message: "Sedang proses", type: "loading" });
+	try {
+		const res = await axios.put(`/api/end-kegiatan/${id}`);
+		if (res?.data?.success) {
+			toastLoading({
+				message: "Aktivitas berhasil diselesaikan",
+				type: "success",
+			});
+			return res.data;
 		}
+	} catch (error) {
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		toastLoading({
+			message: "Kegiatan gagal diselesaikan " + message,
+			type: "error",
+		});
+		return responseErrors(message);
+	}
+};
+
+export const cancelEndAktivitas = async (id = null) => {
+	toastLoading({ message: "Sedang proses", type: "loading" });
+	try {
+		const res = await axios.put(`/api/cancelEnd-kegiatan/${id}`);
+		if (res?.data?.success) {
+			toastLoading({
+				message: "Aktivitas berhasil batal diselesaikan",
+				type: "success",
+			});
+			return res.data;
+		}
+	} catch (error) {
+		const message =
+			error?.response?.data?.message ||
+			error.response?.data?.message ||
+			error.message;
+		toastLoading({
+			message: "Kegiatan gagal batal diselesaikan " + message,
+			type: "error",
+		});
+		return responseErrors(error);
 	}
 };

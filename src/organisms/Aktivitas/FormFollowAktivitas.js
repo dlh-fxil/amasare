@@ -7,17 +7,17 @@ import * as yup from "yup";
 import { Switch } from "@headlessui/react";
 import { followingAktivitas } from "@hooks/api/Kegiatan/aktivitas";
 import Moment from "react-moment";
-import { makeOptionsUraianTugas } from "@hooks/api/Kepegawaian/uraianTugas";
+import { useAuth } from "@hooks/api/auth";
 const FormFollowAktivitas = ({
-	dataFollow = {},
+	aktivitas = {},
 	close = () => {},
-	pegawai = {},
-	returnSuccess = () => {},
+	responseFromChild = () => {},
 } = {}) => {
-	const { optionsUraianTugas, getOptionsUraianTugas } = makeOptionsUraianTugas();
+	const { user } = useAuth({ middleware: "auth" });
 
-	const [hasUraianTugas, sethasUraianTugas] = useState(true);
-	const [jabatanId, setJabatanId] = useState(pegawai?.jabatan_id);
+	const [optionsUraianTugas, setOptionsUraianTugas] = useState([]);
+	const [withUraianTugas, setWithUraianTugas] = useState(true);
+
 	const schema = yup
 		.object({
 			uraian_tugas_id: yup
@@ -45,70 +45,80 @@ const FormFollowAktivitas = ({
 		reValidateMode: "onChange",
 	});
 
-	useEffect(async () => {
-		if (jabatanId && hasUraianTugas && optionsUraianTugas.length == 0) {
-			await getOptionsUraianTugas(jabatanId);
+	useEffect(() => {
+		if (user.jabatan?.uraianTugas) {
+			const data = user.jabatan.uraianTugas;
+			let temp = [];
+			data.map(d => {
+				temp[d.id] = { key: d.id, value: d.id, label: d.uraian_tugas };
+			});
+			setOptionsUraianTugas(temp);
 		}
-	}, [jabatanId, hasUraianTugas]);
+	}, [user]);
 
 	useEffect(() => {
-		console.log(dataFollow);
-		if (dataFollow && dataFollow?.uraian_tugas_id == null) {
-			sethasUraianTugas(false);
+		console.log(aktivitas);
+		if (aktivitas && aktivitas?.uraian_tugas_id == null) {
+			setWithUraianTugas(false);
 		}
-	}, [dataFollow]);
+	}, [aktivitas]);
 
 	const resetForm = () => {
 		reset({}, { keepDefaultValues: true });
-		if (close) {
-			close();
-		}
+		close();
 	};
 	const submitForm = (form, event) => {
 		event.preventDefault();
-		if (dataFollow && dataFollow?.id) {
-			followingAktivitas(form, dataFollow.id).then(res => {
-				returnSuccess(res);
+		if (aktivitas && aktivitas?.id) {
+			followingAktivitas(form, aktivitas.id).then(res => {
+				responseFromChild(res);
 				return resetForm();
 			});
 		}
 	};
 	return (
 		<>
-			<div className="form-header ">Formulir Tambah Kegiatan</div>
+			<div className="form-header ">Formulir Peserta Kegiatan</div>
 			<form className="form" onSubmit={handleSubmit(submitForm)}>
-				<div className="flex px-4 flex-col gap-2">
-					<p>{dataFollow?.judul}</p>
-					<p>
-						{chekJam(dataFollow.mulai) ? (
-							<Moment
-								locale="id"
-								className="text-green-700 line-clamp-1 hover:line-clamp-none text-xs md:text-sm "
-								fromNow>
-								{dataFollow.mulai}
-							</Moment>
-						) : (
-							<Moment
-								locale="id"
-								className="line-clamp-1 hover:line-clamp-none text-slate-800 text-xs md:text-sm"
-								format="dddd D MMM YYYY h:m:s">
-								{dataFollow.mulai}
-							</Moment>
-						)}
-					</p>
+				<div className="flex p-4 flex-col gap-2">
+					<div>
+						<p className="font-semibold text-center uppercase">
+							{aktivitas?.judul}
+						</p>
+						<p>{aktivitas?.uraian}</p>
+						<div className="text-right">
+							{chekJam(aktivitas.mulai) ? (
+								<Moment
+									locale="id"
+									className="text-green-700 line-clamp-1 hover:line-clamp-none text-xs md:text-sm "
+									fromNow>
+									{aktivitas.mulai}
+								</Moment>
+							) : (
+								<Moment
+									locale="id"
+									className="line-clamp-1 hover:line-clamp-none text-slate-800 text-xs md:text-sm"
+									format="dddd D MMM YYYY h:m:s">
+									{aktivitas.mulai}
+								</Moment>
+							)}
+						</div>
+					</div>
 
-					{jabatanId && (
+					{user?.jabatan?.uraianTugas && (
 						<label className="flex flex-wrap justify-between items-start">
 							Aktivitas sesuai uraian tugas?
 							<Switch
-								checked={hasUraianTugas}
-								onChange={sethasUraianTugas}
+								checked={withUraianTugas}
+								onChange={() => {
+									setWithUraianTugas(!withUraianTugas);
+								}}
 								className={`${
-									hasUraianTugas ? "bg-blue-300" : "bg-red-300"
+									withUraianTugas ? "bg-blue-300" : "bg-red-300"
 								} relative inline-flex h-6 w-11 items-center rounded-full`}>
 								<span className="sr-only">Ya</span>
 
-								{hasUraianTugas ? (
+								{withUraianTugas ? (
 									<Icons
 										icon="CheckCircleIcon"
 										className="w-5 h-5 translate-x-6 inline-block text-green-800 transform"
@@ -123,11 +133,11 @@ const FormFollowAktivitas = ({
 						</label>
 					)}
 
-					{hasUraianTugas && optionsUraianTugas.length > 0 && jabatanId && (
+					{withUraianTugas && optionsUraianTugas.length > 0 && (
 						<Controller
 							render={({ field: { onChange, value } }) => (
 								<ComboBox
-									placeholder="Uraian Tugas"
+									placeholder="Pilih uraian tugas yang sesuai"
 									options={optionsUraianTugas}
 									value={value}
 									error={errors?.uraian_tugas_id?.message}

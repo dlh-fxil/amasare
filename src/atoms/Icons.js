@@ -1,16 +1,33 @@
 import * as HIcons from "@heroicons/react/outline";
 import * as HIconsSolid from "@heroicons/react/solid";
 
-const Icons = ({ icon = null, outline = false, className = "h-6 w-6 text-white", ...props }) => {
+const Icons = ({
+	icon = null,
+	outline = false,
+	className = "h-6 w-6 text-white",
+	...props
+}) => {
 	const Icon = name => {
 		const { ...icons } = HIconsSolid;
 		const TheIcon = icons[name];
-		return <TheIcon className={className} {...props} aria-hidden="true" />;
+		return (
+			<TheIcon
+				className={`${className} pointer-events-none`}
+				{...props}
+				aria-hidden="true"
+			/>
+		);
 	};
 	const IconOutline = name => {
 		const { ...icons } = HIcons;
 		const TheIcon = icons[name];
-		return <TheIcon className={className} {...props} aria-hidden="true" />;
+		return (
+			<TheIcon
+				className={`${className} pointer-events-none`}
+				{...props}
+				aria-hidden="true"
+			/>
+		);
 	};
 	let nameIcon = "BanIcon";
 	if (icon && iconNames.includes(icon)) {

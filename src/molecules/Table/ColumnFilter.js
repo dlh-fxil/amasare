@@ -26,7 +26,9 @@ const ColumnFilter = ({ column }) => {
 		</>
 	);
 };
-export function SelectColumnFilter({ column: { filterValue, setFilter, options = [] } }) {
+export function SelectColumnFilter({
+	column: { filterValue, setFilter, options = [] },
+}) {
 	// Calculate the options for filtering
 	// using the preFilteredRows
 	// const options = React.useMemo(() => {
@@ -54,7 +56,9 @@ export function SelectColumnFilter({ column: { filterValue, setFilter, options =
 	);
 }
 export function YearColumnFilter({ column: { filterValue, setFilter } }) {
-	const [year, setYear] = useState(filterValue ? new Date(`July 21, ${filterValue} 01:15:00`) : null);
+	const [year, setYear] = useState(
+		filterValue ? new Date(`July 21, ${filterValue} 01:15:00`) : null,
+	);
 	// if (condition) {
 	// }
 	// Calculate the options for filtering
@@ -69,7 +73,10 @@ export function YearColumnFilter({ column: { filterValue, setFilter } }) {
 
 	// Render a multi-select box
 	const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-		<button className="bg-slate-100 text-sm font-medium w-[4.5rem] text-left  rounded border border-stone-500  px-1.5 py-0.5 example-custom-input" onClick={onClick} ref={ref}>
+		<button
+			className="bg-slate-100 text-sm font-medium w-[4.5rem] text-left  rounded border border-stone-500  px-1.5 py-0.5 example-custom-input"
+			onClick={onClick}
+			ref={ref}>
 			{/* console.log(value); */}
 			{value.length == 0 ? "Semua" : value}
 		</button>

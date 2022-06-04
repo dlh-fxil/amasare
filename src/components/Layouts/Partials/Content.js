@@ -1,8 +1,8 @@
 import Topbar from "./Topbar";
 
-const Content = ({ onSidebarHide, showSidebar, children }) => {
+const Content = ({ onSidebarHide, showSidebar, children, title }) => {
 	return (
-		<div className="flex relative h-screen content w-full">
+		<div className="flex h-screen w-full relative">
 			{/* sidebarSection */}
 			{showSidebar && (
 				<div
@@ -11,8 +11,12 @@ const Content = ({ onSidebarHide, showSidebar, children }) => {
 			{/* contenSection */}
 			<div className="grow w-full flex flex-col max-w-full overflow-x-hidden">
 				{/* top-bar */}
-				<Topbar showSidebar={showSidebar} onSidebarHide={onSidebarHide} />
-				<main id="content" className="w-full grow h-full overflow-auto content">
+				<Topbar
+					showSidebar={showSidebar}
+					title={title}
+					onSidebarHide={onSidebarHide}
+				/>
+				<main id="content" className="w-full grow h-full overflow-auto">
 					{children}
 				</main>
 			</div>
