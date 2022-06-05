@@ -1,6 +1,4 @@
 import AppLayout from "@components/Layouts/AppLayout";
-import Head from "next/head";
-import Container from "@components/Container";
 import HeaderProfile from "@organisms/Profile/HeaderProfile";
 import { useAuth } from "@hooks/api/auth";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -22,11 +20,7 @@ const App = () => {
 		}
 	}, [user]);
 	return (
-		<AppLayout>
-			<Head>
-				<title>Profile</title>
-			</Head>
-
+		<AppLayout title="Profil">
 			<HeaderProfile
 				user={user}
 				reloadProfile={reloadProfile}

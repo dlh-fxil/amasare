@@ -18,24 +18,34 @@ const makeQueryParams = ({
 			filtersWithValue[element.id] = element.value;
 		}
 	});
-	let sort = null;
-	sortBy.forEach(element => {
-		if (element.desc) {
-			return (sort = "-" + element.id);
-		}
-		return (sort = element.id);
-	});
+	const sort = generateSortBy(sortBy);
+
 	const arrr = {
 		perPage: perPage,
 		filter: filtersWithValue,
 		sort: sort,
 		include: includes,
 	};
-	const test = qs.stringify(arrr, {
+	const queryString = qs.stringify(arrr, {
 		skipNulls: true,
 		strictNullHandling: false,
 		addQueryPrefix: true,
 	});
-	return test;
+	return queryString;
 };
+
 export default makeQueryParams;
+
+const generateSortBy = (data = []) => {
+	let temp = ["id"];
+	if (data.length > 0) {
+		data.forEach(element => {
+			if (element.desc) {
+				temp.unshift("-" + element.id);
+			}
+			temp.unshift(element.id);
+		});
+		return `${temp.join(",")}`;
+	}
+	return null;
+};

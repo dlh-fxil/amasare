@@ -1,5 +1,6 @@
 import axios from "@/lib/axios";
 import customToast from "@atoms/customToast";
+import { responseErrors } from "../responseErrors";
 const { toastLoading } = customToast();
 
 export const updateUser = async (formData, id) => {
@@ -36,7 +37,7 @@ export const updateUser = async (formData, id) => {
 		}
 	}
 };
-export const getUser = async ({ query = null, url = null } = {}) => {
+export const getUsers = async ({ query = null, url = null } = {}) => {
 	try {
 		let newUrl = "/api/users";
 		if (query) {
@@ -50,11 +51,7 @@ export const getUser = async ({ query = null, url = null } = {}) => {
 			return res.data;
 		}
 	} catch (error) {
-		const message =
-			error?.response?.data?.message ||
-			error.response?.data?.message ||
-			error.message;
-		return { errors: error, message: message };
+		return responseErrors(error);
 	}
 };
 export const showUser = async id => {

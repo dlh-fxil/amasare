@@ -26,7 +26,9 @@ export default function UraianTugasUser({
 		}
 	};
 	useEffect(() => {
-		setDataUraianTugas(jabatan?.uraianTugas);
+		if (jabatan?.uraianTugas) {
+			setDataUraianTugas(jabatan?.uraianTugas);
+		}
 		return () => {
 			setDataUraianTugas([]);
 		};
@@ -87,11 +89,12 @@ export default function UraianTugasUser({
 													</button>
 												</span>
 											)}
-											{/* {item?.can?.delete && ( */}
-											<span>
-												<DeleteButton returnSuccess={reload} id={item?.id} />
-											</span>
-											{/* )} */}
+											{"  | "}
+											{item?.can?.update && (
+												<span>
+													<DeleteButton returnSuccess={reload} id={item?.id} />
+												</span>
+											)}
 										</div>
 									</li>
 								))}

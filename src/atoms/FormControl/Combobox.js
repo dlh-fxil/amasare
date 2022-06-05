@@ -95,9 +95,9 @@ const ComboBox = forwardRef(
 												Tidak ada pilihan.
 											</div>
 										) : (
-											filteredOption?.map(option => (
+											filteredOption?.map((option, i) => (
 												<Combobox.Option
-													key={option.key}
+													key={i}
 													className={({ active }) =>
 														`relative cursor-default select-none py-2 pl-10 pr-4 ${
 															active

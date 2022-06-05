@@ -9,6 +9,19 @@ export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 
 	const Columns = [
 		{
+			Header: "No",
+			columns: [
+				{
+					Header: "#",
+					width: 40,
+					disableSortBy: true,
+					disableFilters: true,
+					canRisize: false,
+					accessor: (d, i) => i + 1,
+				},
+			],
+		},
+		{
 			Header: "Aksi",
 			columns: [
 				{
@@ -94,40 +107,29 @@ export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 					Header: "Nomenklatur",
 					accessor: "nomenklatur",
 					width: 200,
-					// disableSortBy: true,
-					// disableFilters: true,
 				},
 				{
 					Header: "Kinerja",
 					accessor: "kinerja",
 					width: 200,
-					// disableSortBy: true,
-					// disableFilters: true,
 				},
 				{
 					Header: "Indikator",
 					accessor: "indikator",
 					width: 200,
-					// disableSortBy: true,
-					// disableFilters: true,
 				},
 				{
 					Header: "Pelaksana",
 					accessor: "unit.nama",
 					filter: "unit_id",
 					id: "unit_id",
-					// Cell: ({ row }) => <p>{JSON.stringify(row)}</p>,
-					// Cell: ({ row }) => <p>{row.values["unit?.id"]}</p>,
 					width: 200,
-					// disableSortBy: true,
-					// disableFilters: true,
 				},
 				{
 					Header: "Tahun",
 					accessor: "tahun_anggaran",
 					width: 90,
 					Filter: YearColumnFilter,
-					// options: [2021],
 				},
 			],
 		},
@@ -138,9 +140,7 @@ export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 				{
 					Header: "Status",
 					accessor: "selesai",
-					// disableSortBy: true,
 					width: 100,
-					// disableFilters: true,
 				},
 				{
 					Header: "%",

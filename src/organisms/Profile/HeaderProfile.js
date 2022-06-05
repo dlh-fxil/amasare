@@ -151,7 +151,7 @@ const ButtonProfile = ({
 				returnSuccess={reloadProfile}
 			/>
 			<ModalAktivitas
-				returnSuccess={reloadAktivitas}
+				responseFromChild={reloadAktivitas}
 				open={openModalKegiatan}
 				close={closeModalKegiatan}
 				user={user}

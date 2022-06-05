@@ -7,6 +7,10 @@
 @import 'tippy.js/animations/shift-away.css'; */
 
 @layer utilities {
+	/* select */
+
+	/* select */
+
 	.scrollbar-thin {
 		@apply scrollbar:!w-1.5 scrollbar:!max-h-1.5 scrollbar:!bg-transparent scrollbar-track:!bg-stone-500/20 scrollbar-thumb:!rounded scrollbar-thumb:!bg-slate-500/80 scrollbar-track:!rounded;
 	}

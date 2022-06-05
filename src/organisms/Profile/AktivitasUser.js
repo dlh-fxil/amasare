@@ -53,7 +53,8 @@ const AktivitasUser = ({ userId = null }, ref) => {
 		}
 	}, [userId]);
 	useImperativeHandle(ref, params => ({
-		reload(params) {
+		reload(params = null) {
+			console.log("reload");
 			returnSuccess(params);
 		},
 	}));
@@ -69,7 +70,7 @@ const AktivitasUser = ({ userId = null }, ref) => {
 			allDataAktivitas={data}
 			// setDataFollow={setDataFollow}
 			pageLoad={loading}
-			returnSuccess={returnSuccess}
+			responseFromChild={returnSuccess}
 		/>
 	);
 };

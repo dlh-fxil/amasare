@@ -1,27 +1,105 @@
 import { forwardRef, useEffect, useState } from "react";
-import Select from "react-select";
-const MySelect = ({ options, key, defaultValue, onChange, ...rest }, ref) => {
+import Select, { components } from "react-select";
+
+const MySelect = (
+	{ options = [], indexDefaultValue, onChange = () => {}, ...rest },
+	ref,
+) => {
 	const noOptionsMessage = input => input?.inputValue + " tidak ditemukan";
+	const [index, setIndex] = useState(-1);
+	useEffect(() => {
+		setIndex(indexDefaultValue ?? -1);
+		return () => setIndex(-1);
+	}, [indexDefaultValue]);
+	useEffect(() => {}, [index]);
+	const customStyles = {
+		control: (provided, state) => ({
+			...provided,
+			borderBottom: "1px dotted pink",
+			backgroundColor: "transparent",
+			border: "0px solid",
+			borderRadius: "0px solid",
+			outline: "none",
+			boxShadow: "0",
+			minHeight: "fit-content",
+			color: "currentColor",
+		}),
+		// placeholder: (provided, state) => ({
+		// 	...provided,
+		// 	color: "currentColor",
+		// }),
+		menu: (provided, state) => ({
+			...provided,
+			backgroundColor: "rgb(226 232 240)",
+			color: "black",
+		}),
+		menuList: (provided, state) => ({
+			...provided,
+			color: "currentColor",
+			lineHeight: "24px",
+			fontSize: "14px",
+		}),
+		noOptionsMessage: (provided, state) => ({
+			...provided,
+			color: "currentColor",
+			lineHeight: "24px",
+			fontSize: "14px",
+		}),
+		input: (provided, state) => ({
+			...provided,
+			fontSize: "14px",
+			color: "currentColor",
+		}),
+		singleValue: (provided, state) => ({
+			...provided,
+			fontSize: "14px",
+			color: "currentColor",
+		}),
+		valueContainer: (provided, state) => ({
+			...provided,
+			fontSize: "14px",
+			color: "currentColor",
+		}),
+		dropdownIndicator: (provided, state) => ({
+			...provided,
+			height: "fit-content",
+			padding: "4px",
+			color: "currentColor",
+		}),
+		clearIndicator: (provided, state) => ({
+			...provided,
+			height: "fit-content",
+			padding: "4px",
+			color: "currentColor",
+		}),
+		valueContainer: (provided, state) => ({
+			...provided,
+			height: "fit-content",
+			color: "currentColor",
+		}),
+	};
 
 	return (
 		<Select
 			{...rest}
 			ref={ref}
-			className="font-normal text-sm w-full text-left z-10 border-0  text-slate-800"
-			classNamePrefix="select"
+			className="w-full text-left text-base  font-normal h-fit leading-tight border-b border-slate-500"
+			classNamePrefix="react_select"
 			options={options}
-			defaultValue={defaultValue}
-			onChange={e => onChange(e?.value)}
+			defaultValue={options[index]}
+			onChange={e => {
+				onChange(e?.value);
+				setIndex(e?.value);
+			}}
+			styles={customStyles}
 			noOptionsMessage={noOptionsMessage}
 		/>
 	);
 };
-const App = (
+export const App = (
 	{ options = [], value = "", onChange = () => {}, ...rest },
 	ref,
 ) => {
-	const [key, setKey] = useState(-2);
-
 	useEffect(() => {
 		if (options.length) {
 			const defaultValue = options?.filter(option => option.value == value);
@@ -43,4 +121,4 @@ const App = (
 	return <></>;
 };
 
-export default forwardRef(App);
+export default forwardRef(MySelect);

@@ -42,11 +42,11 @@ export const makeOptionsUnit = async () => {
 		if (success) {
 			let temp = [];
 			data.map((i, key) => {
-				temp.push({
+				temp[i.id] = {
 					key: key,
 					value: i.id,
 					label: `${i.nama}`,
-				});
+				};
 			});
 			return temp;
 		}

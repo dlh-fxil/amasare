@@ -29,6 +29,8 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 		prepareRow,
 		visibleColumns,
 		setAllFilters,
+		setSortBy,
+
 		state: {
 			pageIndex,
 			pageSize,
@@ -45,6 +47,7 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 			manualGlobalFilter: true,
 			manualFilters: true,
 			manualSortBy: true,
+
 			// initialState: {
 			// 	pageSize: 2,
 			// },
@@ -57,9 +60,11 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 	);
 	const resetTable = () => {
 		setAllFilters([]);
-		// clearSortBy();
+		setSortBy([]);
 	};
 	useEffect(() => {
+		console.log(sortBy);
+
 		setTableOption({
 			globalFilter,
 			filters,
@@ -80,8 +85,10 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 								scope="col"
 								className="w-full max-w-full mb-0.5"
 								{...column.getHeaderProps()}>
-								<div className="flex flex-col rounded-lg justify-center items-center h-full bg-slate-500/20 py-2 px-2">
-									{/* <div className='' {...column.getHeaderProps(column.getSortByToggleProps())}> */}
+								<div className="flex flex-col rounded-lg justify-end items-center h-full bg-slate-500/20 py-2 px-2">
+									{column.canFilter && column.id !== "_id"
+										? column.render("Filter")
+										: null}
 									<div className="w-full" {...column.getSortByToggleProps()}>
 										{column.render("Header")}
 										<span className="text-right">
@@ -92,9 +99,6 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 												: ""}
 										</span>
 									</div>
-									{column.canFilter && column.id !== "_id"
-										? column.render("Filter")
-										: null}
 								</div>
 
 								{column.canRisize && (
@@ -115,7 +119,6 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 
 			<tbody className="space-y-0.5" {...getTableBodyProps()}>
 				{rows.map(row => {
-					console.log(row);
 					prepareRow(row);
 					return (
 						<tr className="space-x-1 group " {...row.getRowProps()}>
@@ -124,7 +127,7 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 								return (
 									<td
 										data-tip={cell?.column?.Header}
-										className="overflow-clip text-sm group-even:bg-blue-500/10 leading-tight line-clamp-2 group-active:line-clamp-none group-hover:line-clamp-none shadow shadow-stone-500/50 rounded group-hover:shadow-blue-500 group-active:shadow-blue-500 max-w-full py-1 px-2"
+										className="overflow-clip text-sm group-odd:bg-blue-500/10 leading-tight line-clamp-2 group-active:line-clamp-none group-hover:line-clamp-none shadow shadow-stone-500/50 rounded group-hover:shadow-blue-500 group-active:shadow-blue-500 max-w-full py-1 px-2"
 										{...cell.getCellProps({
 											style: {
 												minWidth: cell.minWidth, // width: cell.width,
