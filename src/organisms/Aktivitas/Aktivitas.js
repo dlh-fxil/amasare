@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import Moment from "react-moment";
 import { PhotographIcon } from "@heroicons/react/solid";
 import DialogModal from "@atoms/Modal";
@@ -18,11 +18,20 @@ const Aktivitas = (
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const [modalEnd, setModalEnd] = useState(false);
 	const [modalCancelEnd, setModalCancelEnd] = useState(false);
+	const [unitKegiatan, setUnitKegiatan] = useState("");
 	const chekJam = str => {
 		const val = new Date(str);
 		const now = new Date();
 		return (now - val) / (1000 * 3600) < 12;
 	};
+
+	useEffect(() => {
+		if (aktivitas?.unit) {
+			setUnitKegiatan(aktivitas.unit);
+		} else if (aktivitas?.programKegiatan?.unit) {
+			setUnitKegiatan(aktivitas.programKegiatan?.unit);
+		}
+	}, [aktivitas]);
 
 	const openModalFollow = () => {
 		setModalFollow(true);
@@ -143,10 +152,10 @@ const Aktivitas = (
 										</button>
 									</span>
 								</p>
-								<p className="font-medium whitespace-nowrap sm:text-md text-left w-full pb-2">
-									{aktivitas.programKegiatan?.unit?.nama == "Sektretariat"
-										? aktivitas.programKegiatan?.unit?.nama
-										: "Bidang " + aktivitas.programKegiatan?.unit?.nama}
+								<p className="font-medium line-clamp-1 active:line-clamp-none hover:line-clamp-none sm:text-md text-left w-full pb-2">
+									{unitKegiatan?.nama == "Sektretariat"
+										? unitKegiatan?.nama
+										: "Bidang " + unitKegiatan?.nama}
 								</p>
 
 								<p
@@ -186,10 +195,9 @@ const Aktivitas = (
 											<label className="font-semibold">
 												Pelaksana:
 												<p className="font-normal">
-													{aktivitas.programKegiatan?.unit?.nama ==
-													"Sektretariat"
-														? aktivitas.programKegiatan?.unit?.nama
-														: "Bidang " + aktivitas.programKegiatan?.unit?.nama}
+													{unitKegiatan?.nama == "Sektretariat"
+														? unitKegiatan?.nama
+														: "Bidang " + unitKegiatan?.nama}
 												</p>
 											</label>
 											<label className="font-semibold">

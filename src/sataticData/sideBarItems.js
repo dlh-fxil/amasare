@@ -1,16 +1,10 @@
 const sidebarItems = [
 	[
 		{
-			title: "Dashboard",
+			title: "Profile",
 			notifications: false,
-			route: "/dashboard",
+			route: "/profile",
 			icon: "AcademicCapIcon",
-		},
-		{
-			title: "Kalender",
-			notifications: false,
-			route: "/kalender",
-			icon: "CalendarIcon",
 		},
 
 		{
@@ -20,24 +14,37 @@ const sidebarItems = [
 			icon: "ClipboardCheckIcon",
 		},
 		{
-			title: "Uraian Tugas",
-			route: "/uraian-tugas",
-			icon: "ClipboardListIcon",
-			notifications: 6,
+			title: "Data Pegawai",
+			notifications: false,
+			route: "/pegawai",
+			icon: "AcademicCapIcon",
 		},
-	],
-	[
 		{
 			title: "Program Kegiatan",
 			notifications: false,
 			route: "/program-kegiatan",
 			icon: "AcademicCapIcon",
 		},
+	],
+	[
 		{
-			title: "Data Pegawai",
+			title: "Kalender",
 			notifications: false,
-			route: "/pegawai",
+			route: "/kalender",
+			icon: "CalendarIcon",
+		},
+		{
+			title: "Dashboard",
+			notifications: false,
+			route: "/dashboard",
 			icon: "AcademicCapIcon",
+		},
+
+		{
+			title: "Uraian Tugas",
+			route: "/uraian-tugas",
+			icon: "ClipboardListIcon",
+			notifications: 6,
 		},
 		{
 			title: "Jabatan",
@@ -45,12 +52,7 @@ const sidebarItems = [
 			route: "/jabatan",
 			icon: "AcademicCapIcon",
 		},
-		{
-			title: "Profile",
-			notifications: false,
-			route: "/profile",
-			icon: "AcademicCapIcon",
-		},
+
 		{
 			title: "Pengaturan",
 			notifications: false,
