@@ -17,7 +17,7 @@ export const ConfirmDelete = ({
 				<div className="form">
 					<div className="text-slate-800 py-2 px-6   bg-yellow-100">
 						{" "}
-						Apa Anda Yakin Mengahapus data ini? {itemId}
+						Apa Anda Yakin Mengahapus data ini?
 					</div>
 				</div>
 				<div className="bg-slate-200  rounded-b-lg p-3 flex justify-around">
@@ -25,7 +25,10 @@ export const ConfirmDelete = ({
 						<Icons icon="XIcon" className="-ml-2 w-4 h-4 text-sky-200" />
 						Batal
 					</Button>
-					<Button type="button" onClick={() => deleteAction(itemId)} color="red">
+					<Button
+						type="button"
+						onClick={() => deleteAction(itemId)}
+						color="red">
 						<Icons icon="TrashIcon" className="-ml-2 w-4 h-4 text-sky-200" />
 						Hapus
 					</Button>

@@ -9,7 +9,7 @@ const { toastLoading } = customToast();
 export const addJabatan = async formData => {
 	toastLoading({ message: "Data sedang ditambahkan", type: "loading" });
 	try {
-		const res = await axios.post(`/api/Jabatan`, formData);
+		const res = await axios.post(`/api/jabatan`, formData);
 		if (res?.data?.success) {
 			toastLoading({
 				message: "Data Berhasil di simpan",
@@ -18,7 +18,6 @@ export const addJabatan = async formData => {
 			return res.data;
 		}
 	} catch (error) {
-		// console.clear();
 		if (error?.response?.status == 422) {
 			toastLoading({
 				messages: Object.values(error.response.data.errors).flat(),
@@ -41,7 +40,7 @@ export const addJabatan = async formData => {
 export const updateJabatan = async (formData, id) => {
 	toastLoading({ message: "Perubahan sedang disimpan", type: "loading" });
 	try {
-		const res = await axios.put(`/api/Jabatan/${id}`, formData);
+		const res = await axios.put(`/api/jabatan/${id}`, formData);
 		if (res?.data?.success) {
 			toastLoading({
 				message: "Data Berhasil di diubah",
@@ -50,7 +49,6 @@ export const updateJabatan = async (formData, id) => {
 			return res.data;
 		}
 	} catch (error) {
-		console.clear();
 		if (error?.response?.status == 422) {
 			toastLoading({
 				messages: Object.values(error.response.data.errors).flat(),
@@ -70,6 +68,21 @@ export const updateJabatan = async (formData, id) => {
 		}
 	}
 };
+export const deleteJabatan = async id => {
+	toastLoading({ message: "Perubahan sedang dihapus", type: "loading" });
+	try {
+		const res = await axios.delete(`/api/jabatan/${id}`);
+		if (res?.data?.success) {
+			toastLoading({
+				message: "Data Berhasil dihapus",
+				type: "success",
+			});
+			return res.data;
+		}
+	} catch (error) {
+		return responseErrors(error);
+	}
+};
 
 export const getJabatan = async ({ query = null, url = null } = {}) => {
 	try {
@@ -86,11 +99,6 @@ export const getJabatan = async ({ query = null, url = null } = {}) => {
 			return res.data;
 		}
 	} catch (error) {
-		console.clear();
-		const message =
-			error?.response?.data?.message ||
-			error.response?.data?.message ||
-			error.message;
 		return responseErrors(error);
 	}
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import useDebounce from "@/lib/useDebounce";
 import { updateFotoProfile } from "./api/ManajemenUser/users";
-
+import { useAuth } from "@hooks/api/auth";
 export default function useAvatarCropper({
 	closeModal,
 	originalSrc,
@@ -18,7 +18,7 @@ export default function useAvatarCropper({
 	const maxSize = 2048;
 	const debounceCroped = useDebounce(croped, 500);
 	const imageInput = useRef(null);
-
+	const { mutate } = useAuth();
 	const onCrop = () => {
 		setCroped(Math.floor(Date.now() / 1000));
 	};
@@ -83,7 +83,10 @@ export default function useAvatarCropper({
 								reset();
 							}
 						})
-						.finally(() => setLoading(false));
+						.finally(() => {
+							mutate();
+							setLoading(false);
+						});
 				} /*, 'image/png' */,
 			);
 		} else {
