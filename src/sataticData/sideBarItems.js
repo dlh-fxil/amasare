@@ -1,6 +1,12 @@
 const sidebarItems = [
 	[
 		{
+			title: "Kalender",
+			notifications: false,
+			route: "/kalender",
+			icon: "CalendarIcon",
+		},
+		{
 			title: "Profile",
 			notifications: false,
 			route: "/profile",
@@ -25,14 +31,14 @@ const sidebarItems = [
 			route: "/program-kegiatan",
 			icon: "AcademicCapIcon",
 		},
+		{
+			title: "Jabatan",
+			notifications: false,
+			route: "/jabatan",
+			icon: "AcademicCapIcon",
+		},
 	],
 	[
-		{
-			title: "Kalender",
-			notifications: false,
-			route: "/kalender",
-			icon: "CalendarIcon",
-		},
 		{
 			title: "Dashboard",
 			notifications: false,
@@ -46,13 +52,12 @@ const sidebarItems = [
 			icon: "ClipboardListIcon",
 			notifications: 6,
 		},
+
 		{
-			title: "Jabatan",
-			notifications: false,
-			route: "/jabatan",
+			title: "Peran (Role)",
+			route: "/roles",
 			icon: "AcademicCapIcon",
 		},
-
 		{
 			title: "Pengaturan",
 			notifications: false,

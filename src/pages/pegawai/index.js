@@ -1,16 +1,23 @@
 import React, { useMemo, useState, useEffect } from "react";
-
 import AppLayout from "@components/Layouts/AppLayout";
-import { Button } from "@atoms/FormControl";
 import Icons from "@atoms/Icons";
 import Table from "@molecules/Table";
 import { getUsers } from "@hooks/api/ManajemenUser/users";
 import makeQueryParams from "@/lib/makeQueryParams";
 import { makeOptionsUnit } from "@hooks/api/Kepegawaian/unit";
-
-import { generateKeyById, mergerArray } from "@/lib/myLib";
-import { NexPageCursor } from "@molecules/ContentButtons";
+import { mergerArray } from "@/lib/myLib";
+import {
+	AddButton,
+	DeleteButton,
+	DownloadButton,
+	EditButton,
+	NexPageCursor,
+	PrintButton,
+	RefreshButton,
+} from "@molecules/ContentButtons";
 import { SelectColumnFilter } from "@molecules/Table/ColumnFilter";
+import FormPegawai from "@organisms/Pegawai/FormPegawai";
+import ModalPegawai from "@organisms/Pegawai/ModalPegawai";
 const App = () => {
 	const [formModalOpen, setFormModalOpen] = useState(false);
 	const [data, setData] = useState([]);
@@ -121,30 +128,10 @@ const App = () => {
 				Cell: cell => (
 					<div className="w-fit">
 						<div className="w-fit h-fit items-center justify-around flex gap-0.5">
-							<Button
-								data-tip="Ubah"
-								size="xs"
-								rounded
-								color="transparent"
-								iconOnly
-								onClick={() => setEditData(cell.row.original)}>
-								<Icons
-									icon="PencilAltIcon"
-									className="w-5 h-5 text-lime-900 pointer-events-none"
-								/>
-							</Button>
-							<Button
-								rounded
-								block
-								data-tip="Hapus"
-								color="transparent"
-								iconOnly
-								onClick={() => setDeleteData(cell.row.original.id)}>
-								<Icons
-									icon="TrashIcon"
-									className="w-5 h-5 pointer-events-none text-rose-900"
-								/>
-							</Button>
+							<EditButton onClick={() => setEditData(cell.row.original)} />
+							<DeleteButton
+								onClick={() => setDeleteData(cell.row.original.id)}
+							/>
 						</div>
 					</div>
 				),
@@ -168,45 +155,20 @@ const App = () => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (data.length && optionsUnit.length) {
-	// 		setLoading(false);
-	// 	}
-	// }, [data, optionsUnit]);
-
 	return (
 		<AppLayout title="Data Pegawai (User)">
+			{/* <ModalPegawai
+				editData={editData}
+				open={!!editData.id}
+				close={() => setEditData({})}
+			/> */}
 			<div className="py-2 h-full">
 				<div className="h-full flex flex-col card-content">
 					<div className="flex shrink-0 p-4 items-center gap-2 max-w-full justify-end">
-						<Button data-tip="Refresh" rounded size="sm" onClick={reloadData}>
-							<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-							<span className="pointer-events-none">Refresh</span>
-						</Button>
-						<Button
-							data-tip="Tambah pegawai / user baru"
-							rounded
-							size="sm"
-							onClick={() => setFormModalOpen(true)}>
-							<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-							<span className="pointer-events-none">Pegawai Baru</span>
-						</Button>
-						<Button
-							data-tip="Belum Buat"
-							onClick={() => alert("to do list...")}
-							rounded
-							size="sm">
-							<span className="pointer-events-none">Download</span>
-							<Icons icon="DownloadIcon" className="w-5 h-5 -mr-1" />
-						</Button>
-						<Button
-							data-tip="Belum Buat"
-							onClick={() => alert("to do list...")}
-							rounded
-							size="sm">
-							<span className="pointer-events-none">Cetak</span>
-							<Icons icon="PrinterIcon" className="w-5 h-5 -mr-1" />
-						</Button>
+						<RefreshButton onClick={reloadData} />
+						{/* <AddButton onClick={() => setFormModalOpen(true)} /> */}
+						<DownloadButton onClick={() => alert("to do list...")} />
+						<PrintButton onClick={() => alert("to do list...")} />
 					</div>
 					<div className="max-w-full -m-2 p-2 grow overflow-auto scrollbar-thin">
 						<Table

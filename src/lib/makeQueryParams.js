@@ -2,7 +2,7 @@ import qs from "qs";
 
 const makeQueryParams = ({
 	globalFilter = null,
-	perPage = 10,
+	perPage = null,
 	filters = [],
 	sortBy = [],
 	includes = null,
@@ -42,8 +42,9 @@ const generateSortBy = (data = []) => {
 		data.forEach(element => {
 			if (element.desc) {
 				temp.unshift("-" + element.id);
+			} else {
+				temp.unshift(element.id);
 			}
-			temp.unshift(element.id);
 		});
 		return `${temp.join(",")}`;
 	}

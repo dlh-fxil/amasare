@@ -365,6 +365,12 @@ const Button = (
 		"text-xs",
 		"leading-normal",
 	];
+	const buttonResponsive = [
+		...sharedClasses,
+		"p-0  items-center rounded-full sm:rounded-md justify-center w-fit sm:py-2 sm:px-4",
+		"text-xs",
+		"leading-normal",
+	];
 	const buttonSM = [
 		...sharedClasses,
 		iconOnly ? "w-fit h-fit p-0 grid place-items-center" : "py-1 px-4",
@@ -398,6 +404,8 @@ const Button = (
 		classes.push(...buttonMedium);
 	} else if (size === "lg") {
 		classes.push(...buttonLG);
+	} else if (size === "responsive") {
+		classes.push(...buttonResponsive);
 	} else {
 		classes.push(...buttonRegular);
 	}

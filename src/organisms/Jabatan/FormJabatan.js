@@ -42,7 +42,7 @@ function FormJabatan({
 			jenis: dataEdit?.jenis || "Fungsional Umum",
 			nama: dataEdit?.nama || "",
 			kelas: dataEdit?.kelas || 10,
-			singkatan: dataEdit?.indikator || "",
+			singkatan: dataEdit?.singkatan || "",
 		},
 		resolver: yupResolver(schema),
 		reValidateMode: "onChange",
@@ -63,8 +63,6 @@ function FormJabatan({
 					returnSuccess(response.data);
 					close();
 					resetForm();
-				} else {
-					console.warn(response);
 				}
 				return setLoading(false);
 			});
@@ -72,10 +70,7 @@ function FormJabatan({
 			addJabatan(form).then(response => {
 				if (response.success) {
 					resetForm();
-					console.log(response);
 					returnSuccess(response.data);
-				} else {
-					console.warn(response);
 				}
 				return setLoading(false);
 			});
@@ -84,7 +79,9 @@ function FormJabatan({
 
 	return (
 		<div className="w-full">
-			<div className="form-header">Formulir Uraian Tugas</div>
+			<div className="form-header">
+				Formulir <Jabatan></Jabatan>
+			</div>
 			<form className="form" onSubmit={handleSubmit(submitForm)}>
 				<div className="flex mx-4 py-2 flex-col gap-2">
 					{optionsJenisJabatan && (

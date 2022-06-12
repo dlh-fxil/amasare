@@ -21,7 +21,7 @@ const DialogConfirmation = (
 				<div className="bg-slate-200  rounded-b-lg p-3 flex justify-around">
 					<Button type="button" onClick={e => close()} color="red">
 						<Icons className="-ml-4 -my-4 w-6 h-6 text-rose-300 group-hover:text-white" />
-						Batal
+						Tidak
 					</Button>
 					<Button type="button" onClick={action} color="lime">
 						Yakin

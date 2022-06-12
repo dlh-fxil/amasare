@@ -1,8 +1,7 @@
 import { YearColumnFilter } from "@molecules/Table/ColumnFilter";
 import * as yup from "yup";
 import { useState } from "react";
-import { Button } from "@atoms/FormControl";
-import Icons from "@atoms/Icons";
+import { DeleteButton, EditButton } from "@molecules/ContentButtons";
 
 export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 	const [programKegiatanEdit, setProgramKegiatanEdit] = useState({});
@@ -30,30 +29,12 @@ export const columnsProgramKegiatan = ({ deleteItem = () => {} }) => {
 					Cell: cell => (
 						<div className="w-fit">
 							<div className="w-fit h-fit items-center justify-around flex gap-0.5">
-								<Button
-									data-tip="Ubah"
-									size="xs"
-									rounded
-									color="transparent"
-									iconOnly
-									onClick={() => setProgramKegiatanEdit(cell.row.original)}>
-									<Icons
-										icon="PencilAltIcon"
-										className="w-5 h-5 text-lime-900 pointer-events-none"
-									/>
-								</Button>
-								<Button
-									rounded
-									block
-									data-tip="Hapus"
-									color="transparent"
-									iconOnly
-									onClick={() => deleteItem(cell.row.original.id)}>
-									<Icons
-										icon="TrashIcon"
-										className="w-5 h-5 pointer-events-none text-rose-900"
-									/>
-								</Button>
+								<EditButton
+									onClick={() => setProgramKegiatanEdit(cell.row.original)}
+								/>
+								<DeleteButton
+									onClick={() => deleteItem(cell.row.original.id)}
+								/>
 							</div>
 						</div>
 					),

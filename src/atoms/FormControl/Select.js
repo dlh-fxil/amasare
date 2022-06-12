@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useState } from "react";
 import Select, { components } from "react-select";
 
-const MySelect = (
+export const MySelect = (
 	{ options = [], indexDefaultValue, onChange = () => {}, ...rest },
 	ref,
 ) => {
@@ -91,6 +91,7 @@ const MySelect = (
 				onChange(e?.value);
 				setIndex(e?.value);
 			}}
+			// isMulti
 			styles={customStyles}
 			noOptionsMessage={noOptionsMessage}
 		/>

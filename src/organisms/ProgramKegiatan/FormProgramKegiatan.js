@@ -69,9 +69,6 @@ function FormProgramKegiatan({
 			makeOptionsProgram().then(d => setOptionsProgram(d));
 		}
 	}, [type]);
-	useEffect(() => {
-		console.log(optionsProgram);
-	}, [optionsProgram]);
 	useEffect(async () => {
 		if (type == "program") {
 			setValue("id_program", null);
@@ -101,7 +98,6 @@ function FormProgramKegiatan({
 	}, [type, idProgram, optionsProgram, idKegiatan, optionsKegiatan]);
 	const submitForm = (form, event) => {
 		event.preventDefault();
-		console.log(form);
 		if (editData && editData?.id) {
 			updateProgramKegiatan(form, editData.id).then(res => {
 				if (res.success) {

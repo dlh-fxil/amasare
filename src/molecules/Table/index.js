@@ -63,8 +63,6 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 		setSortBy([]);
 	};
 	useEffect(() => {
-		console.log(sortBy);
-
 		setTableOption({
 			globalFilter,
 			filters,
@@ -104,7 +102,7 @@ const Table = ({ columns = [], data = [], setTableOption = () => {} } = {}) => {
 								{column.canRisize && (
 									<div
 										{...column.getResizerProps()}
-										className={`resizer top-[10%] -right-0.5  inline-block z-10 transform shadow-md absolute w-1 h-[80%] translate-x-1/2  ${
+										className={`resizer top-[10%] -right-0.5  inline-block transform shadow-md absolute w-1 h-[80%] translate-x-1/2  ${
 											column.isResizing
 												? "isResizing bg-green-500"
 												: "bg-lime-500"

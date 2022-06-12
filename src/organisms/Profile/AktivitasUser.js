@@ -54,7 +54,6 @@ const AktivitasUser = ({ userId = null }, ref) => {
 	}, [userId]);
 	useImperativeHandle(ref, params => ({
 		reload(params = null) {
-			console.log("reload");
 			returnSuccess(params);
 		},
 	}));

@@ -147,8 +147,6 @@ const FormProfilePegawai = ({
 					});
 				} else if (response.errors) {
 					setInvalids(response.errors);
-				} else {
-					console.warn(response);
 				}
 				return setLoading(false);
 			});

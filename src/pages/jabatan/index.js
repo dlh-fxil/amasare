@@ -21,9 +21,16 @@ import Table from "@molecules/Table";
 import { deleteJabatan, getJabatan } from "@hooks/api/Kepegawaian/jabatan";
 import makeQueryParams from "@/lib/makeQueryParams";
 
-import { NexPageCursor } from "@molecules/ContentButtons";
+import {
+	AddButton,
+	DeleteButton,
+	EditButton,
+	NexPageCursor,
+	RefreshButton,
+} from "@molecules/ContentButtons";
 import ModalJabatan from "@organisms/Jabatan/ModalJabatan";
 import { ConfirmDelete } from "@molecules/ConfirmDialog";
+import { mergerArray } from "@/lib/myLib";
 const Jabatan = () => {
 	const [openModalForm, setOpenModalForm] = useState(false);
 	const [data, setData] = useState([]);
@@ -125,30 +132,8 @@ const Jabatan = () => {
 				Cell: cell => (
 					<div className="w-fit">
 						<div className="w-fit h-fit items-center justify-around flex gap-0.5">
-							<Button
-								data-tip="Ubah"
-								size="xs"
-								rounded
-								color="transparent"
-								iconOnly
-								onClick={() => setEditData(cell.row.original)}>
-								<Icons
-									icon="PencilAltIcon"
-									className="w-5 h-5 text-lime-900 pointer-events-none"
-								/>
-							</Button>
-							<Button
-								rounded
-								block
-								data-tip="Hapus"
-								color="transparent"
-								iconOnly
-								onClick={() => setDeleteId(cell.row.original.id)}>
-								<Icons
-									icon="TrashIcon"
-									className="w-5 h-5 pointer-events-none text-rose-900"
-								/>
-							</Button>
+							<EditButton onClick={() => setEditData(cell.row.original)} />
+							<DeleteButton onClick={() => setDeleteId(cell.row.original.id)} />
 						</div>
 					</div>
 				),
@@ -160,7 +145,7 @@ const Jabatan = () => {
 	const goToNextPage = () => {
 		if (nextPage) {
 			setLoading(true);
-			getUsers({ url: nextPage }).then(res => {
+			getJabatan({ url: nextPage }).then(res => {
 				if (res.success) {
 					const newData = mergerArray(data, res.data);
 					setData(newData);
@@ -182,34 +167,11 @@ const Jabatan = () => {
 			<div className="py-2 h-full">
 				<div className="h-full flex flex-col card-content">
 					<div className="flex shrink-0 p-4 items-center gap-2 max-w-full justify-end">
-						<Button data-tip="Refresh" rounded size="sm" onClick={reloadData}>
-							<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-							<span className="pointer-events-none">Refresh</span>
-						</Button>
-						<Button
-							data-tip="Tambah pegawai / user baru"
-							rounded
-							size="sm"
-							onClick={() => setOpenModalForm(true)}>
-							<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-							<span className="pointer-events-none">Pegawai Baru</span>
-						</Button>
-						<Button
-							data-tip="Belum Buat"
-							onClick={() => alert("to do list...")}
-							rounded
-							size="sm">
-							<span className="pointer-events-none">Download</span>
-							<Icons icon="DownloadIcon" className="w-5 h-5 -mr-1" />
-						</Button>
-						<Button
-							data-tip="Belum Buat"
-							onClick={() => alert("to do list...")}
-							rounded
-							size="sm">
-							<span className="pointer-events-none">Cetak</span>
-							<Icons icon="PrinterIcon" className="w-5 h-5 -mr-1" />
-						</Button>
+						<RefreshButton onClick={reloadData} />
+						<AddButton
+							title="Jabatan Baru"
+							onClick={() => setOpenModalForm(true)}
+						/>
 					</div>
 					<div className="max-w-full -m-2 p-2 grow overflow-auto scrollbar-thin">
 						<Table

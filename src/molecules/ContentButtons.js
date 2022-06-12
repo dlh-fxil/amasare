@@ -46,33 +46,114 @@ export const NexPageCursor = ({
 	);
 };
 
-export const AddButton = ({ onClick = () => {} } = {}) => {
+export const AddButton = ({ onClick = () => {}, title = "Tambah" } = {}) => {
 	return (
 		<Button
-			data-tip="Tambah Program/Kegiatan/Sub Kegiatan Baru"
+			data-tip={title}
+			color="slate"
 			rounded
-			size="sm"
+			size="responsive"
 			onClick={onClick}>
-			<Icons icon="PlusCircleIcon" className="w-5 h-5 -ml-2" />
-			<span className="pointer-events-none">Tambah</span>
+			<Icons
+				icon="PlusCircleIcon"
+				className="w-8 h-8  p-1 sm:p-0 sm:w-5 sm:h-5 sm:-ml-2"
+			/>
+			<span className="pointer-events-none hidden sm:block">{title}</span>
 		</Button>
 	);
 };
 
-export const DownloadButton = ({ onClick = () => {} } = {}) => {
+export const DownloadButton = ({
+	onClick = () => {},
+	title = "Download",
+} = {}) => {
 	return (
-		<Button data-tip="Belum dibuat" onClick={onClick} rounded size="sm">
-			<span className="pointer-events-none">Download</span>
-			<Icons icon="DownloadIcon" className="w-5 h-5 -mr-1" />
+		<Button
+			data-tip={title}
+			color="lime"
+			onClick={onClick}
+			rounded
+			size="responsive">
+			<Icons
+				icon="DownloadIcon"
+				className="w-8 h-8  p-1 sm:p-0 sm:w-5 sm:h-5 sm:-ml-2"
+			/>
+			<span className="pointer-events-none hidden sm:block">{title}</span>
 		</Button>
 	);
 };
 
-export const PrintButton = ({ onClick = () => {} } = {}) => {
+export const PrintButton = ({ onClick = () => {}, title = "Cetak" } = {}) => {
 	return (
-		<Button data-tip="Belum dibuat" onClick={onClick} rounded size="sm">
-			<span className="pointer-events-none">Cetak</span>
-			<Icons icon="PrinterIcon" className="w-5 h-5 -mr-2" />
+		<Button data-tip={title} onClick={onClick} rounded size="responsive">
+			<Icons
+				icon="PrinterIcon"
+				className="w-8 h-8 p-1 sm:p-0 sm:w-5 sm:h-5 sm:-ml-2"
+			/>
+			<span className="pointer-events-none hidden sm:block">{title}</span>
+		</Button>
+	);
+};
+
+export const RefreshButton = ({
+	onClick = () => {},
+	title = "Refresh",
+} = {}) => {
+	return (
+		<Button
+			data-tip={title}
+			color="blue"
+			rounded
+			size="responsive"
+			onClick={onClick}>
+			<Icons
+				icon="RefreshIcon"
+				className="w-8 h-8 p-1 sm:p-0 sm:w-5 sm:h-5 sm:-ml-2"
+			/>
+			<span className="pointer-events-none hidden sm:block">{title}</span>
+		</Button>
+	);
+};
+export const EditButton = ({ onClick = () => {}, title = "Ubah" } = {}) => {
+	return (
+		<Button
+			data-tip={title}
+			size="xs"
+			rounded
+			color="transparent"
+			iconOnly
+			onClick={onClick}>
+			<Icons
+				icon="PencilAltIcon"
+				className="w-5 h-5 text-lime-900 pointer-events-none"
+			/>
+		</Button>
+	);
+};
+export const DeleteButton = ({ onClick = () => {}, title = "Hapus" } = {}) => {
+	return (
+		<Button
+			rounded
+			block
+			data-tip={title}
+			color="transparent"
+			iconOnly
+			onClick={onClick}>
+			<Icons
+				icon="TrashIcon"
+				className="w-5 h-5 pointer-events-none text-rose-900"
+			/>
+		</Button>
+	);
+};
+export const FilterButton = ({ onClick = () => {}, title = "Filter" } = {}) => {
+	return (
+		<Button data-tip={title} size="responsive" color="purple" onClick={onClick}>
+			<Icons
+				icon="AdjustmentsIcon"
+				className="w-8 h-8 p-1 sm:p-0 sm:w-5 sm:h-5 sm:-ml-2"
+			/>
+			<span className="pointer-events-none hidden sm:block">{title}</span>
 		</Button>
 	);
 };

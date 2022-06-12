@@ -29,8 +29,8 @@ const Sidebar = ({ onSidebarHide, showSidebar }) => {
 						selected={selected}
 					/>
 				))}
-				<div className="mt-8 mb-0 font-bold block sm:hidden xl:block">
-					SHORTCUTS
+				<div className="mt-8 mx-3 mb-0 font-bold block sm:hidden xl:block">
+					Admin
 				</div>
 				{sidebarItems[1].map((i, key) => (
 					<MenuItem

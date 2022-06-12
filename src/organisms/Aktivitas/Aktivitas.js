@@ -9,15 +9,16 @@ import {
 	endAktivitas,
 } from "@hooks/api/Kegiatan/aktivitas";
 import DialogConfirmation from "@molecules/DialogConfirmation";
+import { ModalDetailAktivitas } from "@molecules/ModalDialog/ModalAktivitas";
 const Aktivitas = (
 	{ aktivitas = {}, responseFromChild = () => {} } = {},
 	ref,
 ) => {
-	const [showDetail, setShowDetail] = useState(false);
 	const [modalFollow, setModalFollow] = useState(false);
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const [modalEnd, setModalEnd] = useState(false);
 	const [modalCancelEnd, setModalCancelEnd] = useState(false);
+	const [detailAktivitas, setDetailAktivitas] = useState([]);
 	const [unitKegiatan, setUnitKegiatan] = useState("");
 	const chekJam = str => {
 		const val = new Date(str);
@@ -55,7 +56,6 @@ const Aktivitas = (
 			setModalCancelEnd(false);
 			return responseFromChild(res);
 		}
-		console.log(res);
 	};
 	const firstImage =
 		aktivitas?.images ??
@@ -131,7 +131,7 @@ const Aktivitas = (
 															}
 															alt="Profile picture"
 															data-tip={user.nama}
-															className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
+															className="w-10 overflow-hidden h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
 														/>
 													</div>
 												),
@@ -146,107 +146,42 @@ const Aktivitas = (
 									{aktivitas.judul}{" "}
 									<span>
 										<button
-											onClick={() => setShowDetail(!showDetail)}
+											onClick={() => setDetailAktivitas(aktivitas)}
 											className="py-0.5 text-slate-900 px-2 rounded-full bg-blue-200 text-sm">
-											{showDetail ? "Sembunyikan" : "Detail"}
+											Detail
 										</button>
 									</span>
 								</p>
-								<p className="font-medium line-clamp-1 active:line-clamp-none hover:line-clamp-none sm:text-md text-left w-full pb-2">
-									{unitKegiatan?.nama == "Sektretariat"
-										? unitKegiatan?.nama
-										: "Bidang " + unitKegiatan?.nama}
-								</p>
+								{unitKegiatan && (
+									<p className="font-medium line-clamp-1 active:line-clamp-none hover:line-clamp-none sm:text-md text-left w-full pb-2">
+										{unitKegiatan?.nama == "Sektretariat"
+											? unitKegiatan?.nama
+											: "Bidang " + unitKegiatan?.nama}
+									</p>
+								)}
 
 								<p
 									className={`line-clamp-2 text-sm sm:text-base active:line-clamp-none hover:line-clamp-none`}>
 									{aktivitas.uraian}{" "}
 								</p>
-								{!showDetail && (
-									<div className="flex mt-1 sm:hidden overscroll-x-contain overflow-x-auto scrollbar-thin supports-scrollbars:pb-1 space-x-1 ">
-										{aktivitas?.users?.map(
-											user =>
-												user.id !== aktivitas.created_by && (
-													<div key={user.id} className="min-w-fit min-h-fit">
-														<img
-															src={
-																user?.profile_images?.thumb ??
-																`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
-															}
-															alt="Profile picture"
-															data-tip={user.nama}
-															className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
-														/>
-													</div>
-												),
-										)}
-									</div>
-								)}
-								{showDetail && (
-									<div className="w-full sm:flex">
-										<div className="md:w-1/6 w-full flex justify-center items-center h-64 md:h-auto md:pr-2 md:pt-2 overflow-hidden rounded-lg">
-											<img
-												className="w-full object-contain rounded-lg h-full"
-												src={firstImage}
-												alt={aktivitas.judul}
-											/>
-										</div>
-										<div>
-											<label className="font-semibold">
-												Pelaksana:
-												<p className="font-normal">
-													{unitKegiatan?.nama == "Sektretariat"
-														? unitKegiatan?.nama
-														: "Bidang " + unitKegiatan?.nama}
-												</p>
-											</label>
-											<label className="font-semibold">
-												Sub Kegiatan: {aktivitas.programKegiatan?.kode}
-												<p className="font-normal">
-													{aktivitas.programKegiatan?.nomenklatur}
-												</p>
-											</label>
-											{aktivitas.programKegiatan?.kegiatan && (
-												<label className="font-semibold">
-													Kegiatan:
-													<p className="font-normal">
-														{aktivitas.programKegiatan?.kegiatan?.nomenklatur}
-													</p>
-												</label>
-											)}
-											{aktivitas.programKegiatan?.program && (
-												<label className="font-semibold">
-													Program:
-													<p className="font-normal">
-														{aktivitas.programKegiatan?.program?.nomenklatur}
-													</p>
-												</label>
-											)}
-
-											<label className="font-semibold">
-												Nama Peserta Pelaksana Kegiatan:
-												<ul>
-													{aktivitas?.users?.map(user => (
-														<li
-															key={user.id}
-															className="list-decimal font-normal list-inside">
-															{/* <img
-																		src={
-																			user?.profile_images?.thumb ??
-																			`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
-																		}
-																		alt="Profile picture"
-																		data-tip={user.nama}
-																		className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
-																	/> */}
-															{user.nama}
-														</li>
-													))}
-												</ul>
-											</label>
-										</div>
-									</div>
-								)}
+								<div className="flex mt-1 sm:hidden overscroll-x-contain overflow-x-auto scrollbar-thin supports-scrollbars:pb-1 space-x-1 ">
+									{aktivitas?.users?.map(
+										user =>
+											user.id !== aktivitas.created_by && (
+												<div key={user.id} className="min-w-fit min-h-fit">
+													<img
+														src={
+															user?.profile_images?.thumb ??
+															`https://ui-avatars.com/api/?name=${user.name}&color=fff&background=0D8ABC&size=32`
+														}
+														alt="Profile picture"
+														data-tip={user.nama}
+														className="w-10 h-10 scrollbar:h-8 scrollbar:w-8 object-cover rounded-full"
+													/>
+												</div>
+											),
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -254,29 +189,33 @@ const Aktivitas = (
 				<div className="py-2 px-4">
 					<div className="border border-gray-200 border-l-0 border-r-0 py-1">
 						<div className="flex justify-around space-x-2">
-							{aktivitas.can.end ? (
+							{aktivitas.can.end && (
 								<button
 									onClick={openModalEnd}
 									type="button"
 									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
 									<span className="text-sm font-semibold">Selesaikan</span>
 								</button>
-							) : (
+							)}
+							{aktivitas.can.cancelEnd && (
 								<button
 									onClick={openModalCancelEnd}
 									type="button"
 									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
-									<span className="text-sm font-semibold">Masih berjalan</span>
+									<span className="text-sm font-semibold">
+										Batal Selesaikan?
+									</span>
 								</button>
 							)}
-							{aktivitas.can.follow ? (
+							{aktivitas.can.follow && (
 								<button
 									onClick={openModalFollow}
 									type="button"
 									className="w-full flex space-x-2 justify-center items-center hover:bg-gray-100 text-xl py-2 rounded-lg cursor-pointer text-gray-500">
 									<span className="text-sm font-semibold">Ikuti</span>
 								</button>
-							) : (
+							)}
+							{aktivitas.can.unfollow && (
 								<button
 									onClick={openModalConfirmDelete}
 									type="button"
@@ -284,7 +223,7 @@ const Aktivitas = (
 									<span className="text-sm font-semibold">Hapus</span>
 								</button>
 							)}
-							{!aktivitas.can.end && (
+							{aktivitas.can.end && (
 								<button
 									type="button"
 									onClick={() => alert("fitur dalam proses pengerjaan")}
@@ -316,7 +255,7 @@ const Aktivitas = (
 					open={modalCancelEnd}
 					action={cancelEnd}
 					close={closeModal}>
-					Apakah anda yakin kegiatan ini masih berjalan?
+					Kegiatan sudah diselesaikan apakah anda yakin kegiatan belum selesai?
 				</DialogConfirmation>
 
 				<DialogConfirmation open={modalEnd} action={end} close={closeModal}>
@@ -329,6 +268,11 @@ const Aktivitas = (
 					close={closeModal}>
 					Apakah anda yakin ingin menghapus kegiatan ini?
 				</DialogConfirmation>
+				<ModalDetailAktivitas
+					open={!!detailAktivitas.id}
+					close={() => setDetailAktivitas({})}
+					aktivitas={detailAktivitas}
+				/>
 			</>
 		);
 	}

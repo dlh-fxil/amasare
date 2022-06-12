@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, ComboBox } from "@atoms/FormControl";
+import { Button } from "@atoms/FormControl";
 import AppLayout from "@components/Layouts/AppLayout";
 import SemuaAktivitas from "@organisms/Aktivitas/SemuaAktivitasAktivitas";
 import makeQueryParams from "@/lib/makeQueryParams";
@@ -89,47 +89,15 @@ function ProgramKegiatan() {
 				<div className="card-content h-full flex flex-col">
 					<div className="pb-4 h-fit  flex-none">
 						<div className="flex items-center justify-end space-x-2">
-							{/* <Button color="slate" onClick={() => alert("to do list")}>
-								Print
-							</Button> */}
-							<Button
-								data-tip="Refresh Data"
-								iconOnly
-								rounded
-								color="red"
-								className="p-1"
-								buttonType="outline"
-								onClick={refresData}>
-								<Icons icon="RefreshIcon" className="w-6 h-6 text-rose-800" />
-							</Button>
-							<Button
-								data-tip="Filter Data"
-								iconOnly
-								rounded
-								color="lime"
-								buttonType="outline"
-								className=" p-1"
-								onClick={() => setOpenModalFilter(true)}>
-								<Icons
-									icon="AdjustmentsIcon"
-									className="w-6 h-6 text-lime-800"
-									// outline
-								/>
-							</Button>
-							<Button
-								data-tip="Tambah Aktivitas Baru"
-								color="lime"
-								onClick={() => setOpenModal(true)}>
-								<Icons
-									icon="PlusCircleIcon"
-									className="w-6 h-6 -my-2 -ml-4"
-									// outline
-								/>
-								Aktivitas baru
-							</Button>
+							<RefreshButton onClick={refresData} />
+							<FilterButton onClick={() => setOpenModalFilter(true)} />
+							<AddButton
+								onClick={() => setOpenModal(true)}
+								title="Aktivitas baru"
+							/>
 						</div>
 					</div>
-					<div className="grow overflow-auto">
+					<div className="grow overflow-auto scrollbar-thin">
 						<SemuaAktivitas
 							allDataAktivitas={data}
 							pageLoad={loading}
@@ -163,11 +131,16 @@ function ProgramKegiatan() {
 export default ProgramKegiatan;
 
 import { makeOptionsUnits } from "@hooks/api/Kepegawaian/unit";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import { Select } from "@atoms/FormControl";
 import Icons from "@atoms/Icons";
+import {
+	AddButton,
+	FilterButton,
+	RefreshButton,
+} from "@molecules/ContentButtons";
 
 const FormFilterAktivitas = ({
 	setFilters = () => {},

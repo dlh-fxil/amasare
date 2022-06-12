@@ -57,7 +57,6 @@ const FormFollowAktivitas = ({
 	}, [user]);
 
 	useEffect(() => {
-		console.log(aktivitas);
 		if (aktivitas && aktivitas?.uraian_tugas_id == null) {
 			setWithUraianTugas(false);
 		}

@@ -54,7 +54,7 @@ export const makeOptionsUnit = async () => {
 		return [];
 	}
 };
-export const getUnit = async ({ query = null, url = null }) => {
+export const getUnit = async ({ query = null, url = null } = {}) => {
 	try {
 		let newUrl = "/api/unit";
 		if (query) {
