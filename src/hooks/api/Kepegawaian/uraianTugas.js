@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "@/lib/axios";
 import customToast from "@atoms/customToast";
+import { responseErrors } from "../responseErrors";
 const { toastLoading } = customToast();
 
 export const makeOptionsUraianTugas = () => {
@@ -149,20 +150,13 @@ export const getUraianTugas = async ({ query = null, url = null } = {}) => {
 		if (url) {
 			newUrl = url;
 		}
-		const res = await axios.get(newUrl, { cancelToken: source.token });
+		const res = await axios.get(newUrl);
 
 		if (res?.data?.success) {
 			return res.data;
-		} else {
-			console.log(res?.data?.errors);
 		}
 	} catch (error) {
-		console.clear();
-		if (error?.response?.status == 422) {
-			return error.response.data;
-		} else {
-			return { errors: error, message: error };
-		}
+		return responseErrors(error);
 	}
 };
 
