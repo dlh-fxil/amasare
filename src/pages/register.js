@@ -12,16 +12,21 @@ import * as yup from "yup";
 const schema = yup
 	.object({
 		name: yup.string().required("Nama Harus diisi"),
-		email: yup.string().required("Email harus diisi").email("Harus Berupa Email"),
+		email: yup
+			.string()
+			.required("Email harus diisi")
+			.email("Harus Berupa Email"),
 		password: yup.string().required("Password Harus diisi"),
-		password_confirmation: yup.string().required("Konfirmasi Password Harus diisi"),
+		password_confirmation: yup
+			.string()
+			.required("Konfirmasi Password Harus diisi"),
 	})
 	.required();
 
 const Register = () => {
 	const { registerUser } = useAuth({
 		middleware: "guest",
-		redirectIfAuthenticated: "/dashboard",
+		redirectIfAuthenticated: "/aktivitas",
 	});
 
 	const [errorsBackend, setErrors] = useState([]);
@@ -72,7 +77,10 @@ const Register = () => {
 					<form className="pt-4" onSubmit={handleSubmit(submitForm)}>
 						{/* Validation Errors */}
 						<div className="mx-6 flex flex-col gap-2">
-							<AuthValidationErrors className="mb-4 mx-auto" errors={errorsBackend} />
+							<AuthValidationErrors
+								className="mb-4 mx-auto"
+								errors={errorsBackend}
+							/>
 							{/* Name */}
 							<Input
 								{...register("name")}

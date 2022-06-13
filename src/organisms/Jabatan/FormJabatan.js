@@ -79,9 +79,7 @@ function FormJabatan({
 
 	return (
 		<div className="w-full">
-			<div className="form-header">
-				Formulir <Jabatan></Jabatan>
-			</div>
+			<div className="form-header">Formulir Jabatan</div>
 			<form className="form" onSubmit={handleSubmit(submitForm)}>
 				<div className="flex mx-4 py-2 flex-col gap-2">
 					{optionsJenisJabatan && (
