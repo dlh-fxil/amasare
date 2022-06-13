@@ -123,7 +123,7 @@ export const updateAktivitas = async (formData, id) => {
 	}
 };
 
-export const getAktivitas = async ({ query = null, url = null }) => {
+export const getAktivitas = async ({ query = null, url = null } = {}) => {
 	try {
 		let newUrl = "/api/kegiatan";
 		if (query) {

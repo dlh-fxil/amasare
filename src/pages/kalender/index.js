@@ -134,7 +134,7 @@ const App = () => {
 
 	useEffect(() => {
 		const includes =
-			"users,units,uraianTugas,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan";
+			"users,units,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan";
 
 		const param = makeQueryParams({
 			filters: filtersAktivitas,

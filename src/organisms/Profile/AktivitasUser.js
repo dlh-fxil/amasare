@@ -15,7 +15,7 @@ const AktivitasUser = ({ userId = null }, ref) => {
 	const [filters, setFilters] = useState([]);
 	const [filtersDefault, setFiltersDefault] = useState([]);
 	const [includes, setIncludes] = useState(
-		"users,units,uraianTugas,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan",
+		"users,units,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan",
 	);
 
 	const generateParam = () => {

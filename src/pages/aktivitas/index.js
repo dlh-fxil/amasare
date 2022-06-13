@@ -13,7 +13,7 @@ function ProgramKegiatan() {
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [filters, setFilters] = useState([]);
 	const [includes, setIncludes] = useState(
-		"users,units,uraianTugas,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan",
+		"users,units,createdBy.jabatan,programKegiatan.unit,programKegiatan.program,programKegiatan.kegiatan",
 	);
 	const [openModal, setOpenModal] = useState(false);
 	const [editAktivitas, setEditAktivitas] = useState({});

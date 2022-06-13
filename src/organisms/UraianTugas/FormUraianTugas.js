@@ -78,7 +78,6 @@ function FormUraianTugas({
 			updateUraianTugas(form, dataEdit.id).then(response => {
 				if (response.success) {
 					returnSuccess(response.data);
-					close();
 					resetForm();
 				} else {
 					console.warn(response);

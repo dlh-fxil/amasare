@@ -35,7 +35,6 @@ function FormJabatan({
 		control,
 		handleSubmit,
 		reset,
-		register,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -61,7 +60,6 @@ function FormJabatan({
 			updateJabatan(form, dataEdit.id).then(response => {
 				if (response.success) {
 					returnSuccess(response.data);
-					close();
 					resetForm();
 				}
 				return setLoading(false);

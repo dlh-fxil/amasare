@@ -98,9 +98,7 @@ function FormAktivitas({
 
 	const resetForm = () => {
 		reset({}, { keepDefaultValues: true });
-		if (close) {
-			close();
-		}
+		close();
 	};
 	const submitForm = (form, event) => {
 		event.preventDefault();

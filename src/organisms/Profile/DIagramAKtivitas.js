@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { getAktivitas } from "@hooks/api/Kegiatan/aktivitas";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -50,6 +51,23 @@ export const dataDisetujui = {
 };
 
 const DiagramAktivitas = () => {
+	const [dataAktivitas, setdataAktivitas] = useState([]);
+	const getData = () => {
+		getAktivitas().then(res => {
+			if (res.success) {
+				setdataAktivitas(res.data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		getData();
+	}, []);
+
+	useEffect(() => {
+		console.log(dataAktivitas);
+	}, [dataAktivitas]);
+
 	return (
 		<div className="flex max-w-full overflow-auto scrollbar-thin p-2 justify-center items-center">
 			<div>
