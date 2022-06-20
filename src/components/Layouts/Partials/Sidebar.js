@@ -20,7 +20,7 @@ const Sidebar = ({ onSidebarHide, showSidebar }) => {
 			}`}>
 			<Logo showSidebar={showSidebar} onSidebarHide={onSidebarHide} />
 
-			<div className="flex-grow group bg-slate-900  w-full text-white overflow-x-auto overflow-y-auto flex flex-col ">
+			<div className="flex-grow group bg-slate-900 text-left w-full text-white overflow-x-auto overflow-y-auto flex flex-col ">
 				{sidebarItems[0].map((i, key) => (
 					<MenuItem
 						key={key}
