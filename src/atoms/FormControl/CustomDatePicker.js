@@ -2,7 +2,12 @@ import DatePicker from "react-datepicker";
 import { useState, forwardRef } from "react";
 import Input from "./Input";
 export const YearPiccker = ({ value, onChange, placeholder, error }) => {
-	const [newDate, setNewDate] = useState(value ? new Date(value, 11, 17, 0, 0, 0, 0) : new Date());
+	const [startDate, setStartDate] = useState(new Date());
+	 useEffect(() => {
+		 if (value){
+			 setStartDate(new Date(value, 11, 17, 0, 0, 0, 0)
+		 }
+  },[value]);
 	const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
 		<Input
 			placeholder={placeholder}
@@ -15,7 +20,7 @@ export const YearPiccker = ({ value, onChange, placeholder, error }) => {
 	return (
 		// <div className="w-full">
 		<DatePicker
-// 			selected={newDate}
+			selected={startDate}
 			onChange={date => {
 				onChange(date ? date.getFullYear() : undefined);
 				setNewDate(date ? date : undefined);
