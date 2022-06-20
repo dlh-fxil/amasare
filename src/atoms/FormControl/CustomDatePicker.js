@@ -15,7 +15,7 @@ export const YearPiccker = ({ value, onChange, placeholder, error }) => {
 	return (
 		// <div className="w-full">
 		<DatePicker
-			selected={newDate}
+// 			selected={newDate}
 			onChange={date => {
 				onChange(date ? date.getFullYear() : undefined);
 				setNewDate(date ? date : undefined);
