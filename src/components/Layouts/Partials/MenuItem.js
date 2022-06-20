@@ -22,7 +22,7 @@ const MenuItem = ({
 				onClick={() => onClick(route)}>
 				<Icons
 					icon={icon}
-					className={`w-fit h-5 ${
+					className={`w-5 h-5 ${
 						router.pathname == route ? " text-blue-500" : ""
 					}`}
 				/>
