@@ -5,7 +5,7 @@ export const YearPiccker = ({ value, onChange, placeholder, error }) => {
 	const [startDate, setStartDate] = useState(new Date());
 	 useEffect(() => {
 		 if (value){
-			 setStartDate(new Date(value, 11, 17, 0, 0, 0, 0)
+			 setStartDate(new Date(value, 11, 17, 0, 0, 0, 0))
 		 }
   },[value]);
 	const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
