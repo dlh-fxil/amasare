@@ -23,7 +23,7 @@ export const YearPiccker = ({ value, onChange, placeholder, error }) => {
 			selected={startDate}
 			onChange={date => {
 				onChange(date ? date.getFullYear() : undefined);
-				setNewDate(date ? date : undefined);
+				setStartDate(date ? date : undefined);
 			}}
 			withPortal
 			dateFormat="yyyy"
