@@ -303,7 +303,7 @@ function FormProgramKegiatan({
 											<Controller
 												render={({ field: { onChange, value } }) => (
 													<YearPiccker
-														value={value}
+														value={parseInt(value)}
 														onChange={e => onChange(e)}
 														placeholder="Tahun Anggaran"
 														error={errors?.tahun_anggaran?.message}
